@@ -168,6 +168,8 @@ html, body { height: 100%; overflow: hidden; font-family: 'DM Sans', sans-serif;
 .link-text { flex: 1; }
 .link-text strong { display: block; font-size: .92rem; font-weight: 500; }
 .link-text span { font-size: .72rem; opacity: .45; font-family: 'Space Mono', monospace; }
+.panel--sci .link-text strong { color: #e8f4ff; }
+.panel--sci .link-text span { color: #b0d4f0; opacity: .7; }
 .link-chevron { font-size: .7rem; opacity: .35; transition: transform .3s, opacity .2s; line-height: 1; }
 .link-item:hover .link-chevron { opacity: .7; }
 .link-entry.open .link-chevron { transform: rotate(180deg); opacity: .9; }
@@ -304,10 +306,36 @@ audio::-webkit-media-controls-panel { background: rgba(255,255,255,.06); }
   transition: all .2s; margin-bottom: 1.5rem; align-self: flex-start;
 }
 .back-btn:hover { color: #fff; border-color: rgba(255,255,255,.4); }
+
+/* ── SPLASH TITLE ── */
+.splash-title {
+  position: fixed; top: 2rem; left: 50%; transform: translateX(-50%);
+  z-index: 100; pointer-events: none;
+  display: flex; flex-direction: column; align-items: center; gap: .25rem;
+  transition: opacity .5s ease;
+  background: rgba(0,0,0,.85); padding: .6rem 1.4rem .7rem; border-radius: 4px;
+}
+.splash-title.hidden { opacity: 0; }
+.splash-name {
+  font-family: 'Playfair Display', serif; font-size: clamp(1.1rem, 2vw, 1.6rem);
+  font-weight: 700; color: #fff; letter-spacing: .02em;
+  text-shadow: 0 0 30px rgba(79,195,247,.3), 0 0 60px rgba(224,64,251,.2);
+}
+.splash-sub {
+  font-family: 'Space Mono', monospace; font-size: .6rem;
+  letter-spacing: .45em; text-transform: uppercase;
+  color: rgba(255,255,255,.35);
+}
 </style>
 </head>
 <body>
 <div class="stage fresh" id="stage">
+
+  <!-- ══ SPLASH TITLE ══ -->
+  <div class="splash-title" id="splashTitle">
+    <span class="splash-name">Brandon Imstepf</span>
+    <span class="splash-sub">Portfolio</span>
+  </div>
 
   <!-- ══ SCIENCE PANEL ══ -->
   <div class="panel panel--sci" id="panelSci">
@@ -595,6 +623,7 @@ var contentSci = document.getElementById('contentSci');
 var contentCre = document.getElementById('contentCre');
 var backSci    = document.getElementById('backSci');
 var backCre    = document.getElementById('backCre');
+var splashTitle = document.getElementById('splashTitle');
 var current    = null;
 
 /* ── Panel expand / collapse ── */
@@ -603,6 +632,7 @@ function expand(side) {
   if (current === side) return;
   current = side;
   divider.classList.add('hidden');
+  splashTitle.classList.add('hidden');
   if (side === 'sci') {
     panelSci.classList.add('expanded');   panelSci.classList.remove('collapsed');
     panelCre.classList.add('collapsed');  panelCre.classList.remove('expanded');
