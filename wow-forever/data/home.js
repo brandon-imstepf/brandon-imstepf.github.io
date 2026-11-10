@@ -34,7 +34,7 @@ window.PAGE = {
               {
                 "note": "Survey class"
               },
-              "Tinkers are the inventors of the gnomes, dwarves and goblins, who would sooner build an answer than cast one. A Tinker has no mana. Each device adds Heat, and at 100 Heat the Tinker overheats and can use no device until the machine has cooled.",
+              "Tinkers are the inventors of the gnomes, dwarves and goblins, who would sooner build an answer than cast one. Tinkers do not have mana. Each skill usage adds Heat, and at 100 Heat the Tinker overheats and can use no device until the heat has dissipated.",
               {
                 "table": [
                   ["", ""],
@@ -42,7 +42,7 @@ window.PAGE = {
                   ["Resource", "Heat"],
                   ["Weapons", "Guns, Maces, Tools"],
                   ["Alliance", "Gnome, Dwarf"],
-                  ["Horde", "Goblin"]
+                  ["Horde", "Undead,Goblin"]
                 ]
               },
               {
@@ -128,7 +128,7 @@ window.PAGE = {
               {
                 "note": "Survey class, full design"
               },
-              "Necromancers are masters of death who command the dead as servants and wear bone as armor. Each Necromancer keeps a store of corpses that no other player can touch. Corpses strengthen spells and raise servants, yet no spell requires one.",
+              "Necromancers are masters of death who command the dead as servants and wear bone as armor. Each Necromancer keeps a store of corpses to strengthen spells and raise servants.",
               {
                 "table": [
                   ["", ""],
@@ -150,12 +150,7 @@ window.PAGE = {
                 "page": "necromancer"
               }
             ]
-          }
-        ]
-      },
-      {
-        "group": "Other Concepts",
-        "entries": [
+          },
           {
             "title": "Warden",
             "tag": "Mail",
@@ -219,6 +214,12 @@ window.PAGE = {
         ]
       },
       {
+        "group": "Other Concepts",
+        "entries": [
+          
+        ]
+      },
+      {
         "group": "Trade Skills",
         "entries": [
           {
@@ -244,9 +245,8 @@ window.PAGE = {
           "title": "How to Use This Compendium",
           "tag": "Guide",
           "body": [
-            "Choose a class from the left. Its simulation will begin.",
+            "Choose a class from the left to launch the simulation.",
             "The bar along the bottom opens the Spellbook, the Talents and the Design Log over the simulation. Keys P, N and L do the same.",
-            "Choosing another class or the Professions clears everything and begins anew.",
             {
               "h": "Objectives"
             },
@@ -265,7 +265,7 @@ window.PAGE = {
           "tag": "Pillar",
           "body": [
             "Talent trees, long leveling and the management of resources remain as they were.",
-            "Ideas from later expansions are admitted only where they mend a true fault in the original game.",
+            "Ideas from later expansions are admitted only where they improve upon the original game and do not detract from the vanilla experience.",
             {
               "h": "Objectives"
             },
@@ -275,9 +275,11 @@ window.PAGE = {
           ]
         },
         {
-          "title": "Support Is Not a Role",
+          "title": "Support as a Half-Role",
           "tag": "Pillar",
           "body": [
+            "Support is a semi-role that focuses on buffing allies and debuffing enemies.",
+            "Alone, it is not a complete role.",
             "Every specialization is a tank, a healer or a damage dealer first.",
             "Support is added on top. A Warchanter is Melee DPS and Support. A Minstrel is a Healer and Support.",
             {
@@ -289,25 +291,11 @@ window.PAGE = {
           ]
         },
         {
-          "title": "One Secondary Resource",
-          "tag": "Pillar",
-          "body": [
-            "Mana remains the chief resource of every caster. The Tinker, who has only Heat, is the exception.",
-            "Each new class has one secondary resource, and it must be read at a glance: Corpses, Verse, Veil, Vengeance, Vitae.",
-            {
-              "h": "Objectives"
-            },
-            {
-              "list": ["One secondary resource for each class"]
-            }
-          ]
-        },
-        {
           "title": "Factions Matter",
           "tag": "Pillar",
           "body": [
-            "Every class must have a reason to exist on each side.",
-            "Where no reason has been found, the gap is recorded as an unsettled matter.",
+            "I endeavor to ensure every class has a reason to exist on each side.",
+            "For example, Necromancers on Horde are a natural extension of the Undead race identity, but on Alliance it would only be acceptable in extreme cases.",
             {
               "h": "Objectives"
             },
@@ -317,10 +305,10 @@ window.PAGE = {
           ]
         },
         {
-          "title": "Unsettled Matters",
+          "title": "Current WIP Matters",
           "tag": "Undecided",
           "body": [
-            "Names for Veil and Deceiver. Races for the Warden and the San'layn. The San'layn specializations await approval. The Necromancer's remaining questions are kept in its own log.",
+            "Names for Veil and Deceiver. Races for the Warden and the San'layn. The San'layn specializations still need work. The Necromancer's remaining questions are kept in its own log.",
             {
               "h": "Objectives"
             },
