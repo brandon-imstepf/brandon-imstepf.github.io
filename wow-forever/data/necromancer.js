@@ -29,8 +29,8 @@ window.PAGE = {
           ["Armor", "Cloth"],
           ["Resource", "Mana and Corpses"],
           ["Weapons", "Staves, Daggers, Wands"],
-          ["Alliance", "Human, Dwarf"],
-          ["Horde", "Undead, Orc"]
+          ["Alliance", "auto"],
+          ["Horde", "auto"]
         ],
         "sections": [
           {

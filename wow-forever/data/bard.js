@@ -29,8 +29,8 @@ window.PAGE = {
           ["Armor", "Leather"],
           ["Resource", "Mana and Verse"],
           ["Weapons", "Instrument, Sheet Music (off-hand)"],
-          ["Alliance", "Human, Dwarf, Night Elf, Gnome"],
-          ["Horde", "Orc, Tauren, Troll, Goblin"]
+          ["Alliance", "auto"],
+          ["Horde", "auto"]
         ],
         "sections": [
           {

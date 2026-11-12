@@ -29,8 +29,8 @@ window.PAGE = {
           ["Armor", "Cloth"],
           ["Resource", "Mana and Vitae"],
           ["Weapons", "Undecided"],
-          ["Alliance", "Undecided"],
-          ["Horde", "Undecided"]
+          ["Alliance", "auto"],
+          ["Horde", "auto"]
         ],
         "sections": [
           {

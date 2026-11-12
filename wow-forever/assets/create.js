@@ -21,7 +21,7 @@
     return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; });
   }
   function pageHref(key) { return key === 'home' ? '../index.html' : key + '.html'; }
-  function renderBody(body) {
+  function renderBody(body, race) {
     var h = '';
     (body || []).forEach(function (b) {
       if (typeof b === 'string') { h += '<p>' + esc(b) + '</p>'; return; }
@@ -31,7 +31,11 @@
       if (b.text) h += '<p>' + esc(b.text) + '</p>';
       if (b.list) h += '<ul>' + b.list.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>';
       if (b.table) h += '<table>' + b.table.map(function (row, i) {
-        return '<tr>' + row.map(function (c) { var t = i === 0 ? 'th' : 'td'; return '<' + t + '>' + esc(c) + '</' + t + '>'; }).join('') + '</tr>';
+        return '<tr>' + row.map(function (c, j) {
+          var t = i === 0 ? 'th' : 'td';
+          if (j === 1 && row[0] === 'Classes' && c === 'auto') c = rosterClasses(race) || 'TBD';
+          return '<' + t + '>' + esc(c || 'TBD') + '</' + t + '>';
+        }).join('') + '</tr>';
       }).join('') + '</table>';
       if (b.link) h += '<p><a href="' + esc(pageHref(b.page)) + '">' + esc(b.link) + '</a></p>';
     });
@@ -59,7 +63,13 @@
   var classByName = {};
   C.classes.forEach(function (c) { classByName[c.name.toLowerCase()] = c; });
 
-  function classesFrom(text) {
+  var ROSTER = window.ROSTER || {};
+  function rosterClasses(race) {
+    for (var fac in ROSTER) if (ROSTER[fac][race]) return ROSTER[fac][race].join(', ');
+    return null;
+  }
+  function classesFrom(text, race) {
+    if (text === 'auto' || !text) text = rosterClasses(race);   // data/roster.js
     if (!text || /^\s*TBD/i.test(text)) return null;          // not decided yet
     return text.split(',').map(function (s) { return classByName[s.trim().toLowerCase()]; })
       .filter(Boolean).map(function (c) { return c.key; });
@@ -84,7 +94,7 @@
       var facts = factsOf(f.body);
       var fac = (facts.Faction || '').toLowerCase();
       f.faction = fac === 'horde' ? 'horde' : fac === 'alliance' ? 'alliance' : (item.faction === 'horde' ? 'horde' : 'alliance');
-      f.classes = classesFrom(facts.Classes);
+      f.classes = classesFrom(facts.Classes, f.name);
       f.look = f.cfg.look || {};
       f.model = f.cfg.model || '';
       f.iconSrc = f.cfg.icon || '';
@@ -633,6 +643,46 @@
     });
   }
 
+  /* Sub-races pop out beside the chosen race icon. */
+  var fly = $('formFly');
+  function showFly() {
+    var r = RACES[sel.race];
+    if (r.forms.length < 2) { fly.hidden = true; return; }
+    fly.innerHTML = '';
+    r.forms.forEach(function (o, j) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'cc-flyopt';
+      b.setAttribute('aria-pressed', String(j === r.formIdx));
+      var src = hasGL ? portraitFor(o) : '';
+      b.style.setProperty('--fbg', o.faction === 'horde' ? '#5a1d14' : '#233a66');
+      b.innerHTML = (src ? '<img alt="" src="' + src + '">' : '<span class="cc-flyletter">' + esc(o.name.charAt(0)) + '</span>') +
+        '<span>' + esc(o.name) + (r.group === 'split' ? '<small>' + (o.faction === 'horde' ? 'Horde' : 'Alliance') + '</small>' : '') + '</span>';
+      b.addEventListener('click', function () { if (j !== r.formIdx) pickRace(sel.race, j); });
+      fly.appendChild(b);
+    });
+    fly.hidden = false;
+    placeFly();
+  }
+  function placeFly() {
+    if (fly.hidden) return;
+    var a = raceBtns[sel.race].getBoundingClientRect(), fw = fly.offsetWidth, fh = fly.offsetHeight;
+    var vw = window.innerWidth, vh = window.innerHeight;
+    fly.classList.remove('below');
+    if (a.right + 12 + fw <= vw - 8) {              // to the right of the icon
+      var top = Math.max(8, Math.min(a.top + a.height / 2 - 22, vh - fh - 8));
+      fly.style.left = (a.right + 12) + 'px'; fly.style.top = top + 'px';
+      fly.style.setProperty('--arrow', (a.top + a.height / 2 - top - 7) + 'px');
+    } else {                                          // narrow screens: below it
+      var left = Math.max(8, Math.min(a.left, vw - fw - 8));
+      fly.classList.add('below');
+      fly.style.left = left + 'px'; fly.style.top = (a.bottom + 10) + 'px';
+      fly.style.setProperty('--arrow-x', (a.left + a.width / 2 - left - 7) + 'px');
+    }
+  }
+  window.addEventListener('resize', placeFly);
+  window.addEventListener('scroll', placeFly, true);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') fly.hidden = true; });
+
   function pickRace(i, formIdx) {
     sel.race = i;
     if (formIdx != null) RACES[i].formIdx = formIdx;
@@ -648,16 +698,8 @@
     $('factionCrest').innerHTML = CREST[f.faction];
     $('factionName').textContent = f.faction === 'horde' ? 'Horde' : 'Alliance';
 
-    var tabs = $('raceForms'); tabs.innerHTML = '';
-    if (r.forms.length > 1) r.forms.forEach(function (o, j) {
-      var t = document.createElement('button');
-      t.type = 'button'; t.className = 'cc-form'; t.setAttribute('role', 'tab');
-      t.setAttribute('aria-selected', String(j === r.formIdx));
-      t.innerHTML = esc(o.name) + (r.group === 'split' ? '<small>' + (o.faction === 'horde' ? 'Horde' : 'Alliance') + '</small>' : '');
-      t.addEventListener('click', function () { if (j !== r.formIdx) pickRace(sel.race, j); });
-      tabs.appendChild(t);
-    });
-    $('raceBody').innerHTML = renderBody(f.body);
+    showFly();
+    $('raceBody').innerHTML = renderBody(f.body, f.name);
 
     /* classes */
     var allowed = f.classes;

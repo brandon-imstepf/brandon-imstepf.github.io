@@ -15,6 +15,7 @@
 <div class="cc-view" id="ccView">
   <canvas id="ccCanvas" aria-label="Character preview. Drag to rotate."></canvas>
   <div class="cc-loading" id="ccLoading" hidden>Loading model&hellip;</div>
+  <div class="cc-wip" role="note"><strong>WIP</strong><span>Placeholder silhouettes &middot; models coming soon</span></div>
 </div>
 
 <a class="cc-back" href="races.html">&#8249; Races</a>
@@ -41,7 +42,6 @@
 <aside class="cc-panel cc-right" aria-live="polite">
   <h1 id="raceName"></h1>
   <div class="cc-factionline"><span class="cc-crest" id="factionCrest"></span><span id="factionName"></span></div>
-  <div class="cc-forms" id="raceForms" role="tablist"></div>
   <div class="cc-body" id="raceBody"></div>
   <div class="cc-classinfo" id="classInfo"></div>
 </aside>
@@ -54,12 +54,15 @@
   <button class="cc-create" id="createBtn" type="button">Create Character</button>
 </div>
 
+<div class="cc-fly" id="formFly" role="group" aria-label="Choose a sub-race" hidden></div>
+
 <div class="cc-toast" id="ccToast" role="status" hidden></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="../assets/icons.js"></script>
 <script src="../data/races.js"></script>
 <script>window.RACES = window.PAGE; window.PAGE = null;</script>
+<script src="../data/roster.js"></script>
 <script src="../data/create.js"></script>
 <script src="../assets/create.js"></script>
 </body>

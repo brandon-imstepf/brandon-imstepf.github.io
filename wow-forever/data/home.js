@@ -41,8 +41,8 @@ window.PAGE = {
                   ["Armor", "Mail"],
                   ["Resource", "Heat"],
                   ["Weapons", "Guns, Maces, Tools"],
-                  ["Alliance", "Gnome, Dwarf"],
-                  ["Horde", "Undead,Goblin"]
+                  ["Alliance", "auto"],
+                  ["Horde", "auto"]
                 ]
               },
               {
@@ -71,8 +71,8 @@ window.PAGE = {
                   ["Armor", "Cloth"],
                   ["Resource", "Mana and Veil"],
                   ["Weapons", "Staves, Wands, Daggers"],
-                  ["Alliance", "Human, Gnome"],
-                  ["Horde", "Troll, Undead"]
+                  ["Alliance", "auto"],
+                  ["Horde", "auto"]
                 ]
               },
               {
@@ -101,8 +101,8 @@ window.PAGE = {
                   ["Armor", "Leather"],
                   ["Resource", "Mana and Verse"],
                   ["Weapons", "Instrument, Sheet Music (off-hand)"],
-                  ["Alliance", "Human, Dwarf, Night Elf, Gnome"],
-                  ["Horde", "Orc, Tauren, Troll, Goblin"]
+                  ["Alliance", "auto"],
+                  ["Horde", "auto"]
                 ]
               },
               {
@@ -135,8 +135,8 @@ window.PAGE = {
                   ["Armor", "Cloth"],
                   ["Resource", "Mana and Corpses"],
                   ["Weapons", "Staves, Daggers, Wands"],
-                  ["Alliance", "Human, Dwarf"],
-                  ["Horde", "Undead, Orc"]
+                  ["Alliance", "auto"],
+                  ["Horde", "auto"]
                 ]
               },
               {
@@ -165,8 +165,8 @@ window.PAGE = {
                   ["Armor", "Mail"],
                   ["Resource", "Vengeance"],
                   ["Weapons", "Bladed Weapons, Thrown Knives"],
-                  ["Alliance", "Night Elf"],
-                  ["Horde", "Undecided"]
+                  ["Alliance", "auto"],
+                  ["Horde", "auto"]
                 ]
               },
               {
@@ -195,8 +195,8 @@ window.PAGE = {
                   ["Armor", "Cloth"],
                   ["Resource", "Mana and Vitae"],
                   ["Weapons", "Undecided"],
-                  ["Alliance", "Undecided"],
-                  ["Horde", "Undecided"]
+                  ["Alliance", "auto"],
+                  ["Horde", "auto"]
                 ]
               },
               {

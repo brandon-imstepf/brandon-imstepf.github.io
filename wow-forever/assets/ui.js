@@ -39,6 +39,29 @@
   }
   function icon(name) { return (name && ICONS[name]) || ''; }
   function pageHref(key) { return key === 'home' ? ROOT + 'index.html' : ROOT + 'pages/' + key + '.html'; }
+
+  /* Roster (data/roster.js): the one list of which races play which classes. "auto" values read from it. */
+  var ROSTER = window.ROSTER || {};
+  var CLASS_ORDER = ['Warrior', 'Paladin', 'Hunter', 'Rogue', 'Priest', 'Shaman', 'Mage', 'Warlock', 'Druid',
+                     'Tinker', 'Illusionist', 'Bard', 'Necromancer', 'Warden', "San'layn"];
+  function classesOf(race) {
+    for (var fac in ROSTER) if (ROSTER[fac][race]) return ROSTER[fac][race].length ? ROSTER[fac][race].join(', ') : 'TBD';
+    return 'TBD';
+  }
+  function racesOf(cls, fac) {
+    var list = ROSTER[fac] || {}, out = Object.keys(list).filter(function (r) { return list[r].indexOf(cls) >= 0; });
+    return out.length ? out.join(', ') : 'TBD';
+  }
+  /* Fill an "auto" cell. context is the entry title: a race (for "Classes") or a class (for "Alliance"/"Horde"). */
+  function autoCell(label, value, context) {
+    if (value !== 'auto') return value;
+    if (label === 'Classes') return classesOf(context);
+    if (label === 'Alliance' || label === 'Horde') return racesOf(context, label);
+    return value;
+  }
+  function rosterTable() {
+    return [['Class', 'Alliance', 'Horde']].concat(CLASS_ORDER.map(function (c) { return [c, racesOf(c, 'Alliance'), racesOf(c, 'Horde')]; }));
+  }
   var store = {
     get: function (k) { try { return JSON.parse(localStorage.getItem('wfui:' + k)); } catch (e) { return null; } },
     set: function (k, v) { try { localStorage.setItem('wfui:' + k, JSON.stringify(v)); } catch (e) {} },
@@ -55,8 +78,13 @@
       if (b.note) h += '<p class="sub">' + esc(b.note) + '</p>';
       if (b.text) h += '<p>' + esc(b.text) + '</p>';
       if (b.list) h += '<ul>' + b.list.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>';
-      if (b.table) h += '<table>' + b.table.map(function (row, i) {
-        return '<tr>' + row.map(function (c) { var t = i === 0 ? 'th' : 'td'; return '<' + t + '>' + esc(c) + '</' + t + '>'; }).join('') + '</tr>';
+      var tbl = b.roster === 'by-class' ? rosterTable() : b.table;
+      if (tbl) h += '<table>' + tbl.map(function (row, i) {
+        return '<tr>' + row.map(function (c, j) {
+          var t = i === 0 ? 'th' : 'td';
+          if (j === 1 && row.length === 2) c = autoCell(row[0], c, title);
+          return '<' + t + '>' + esc(c) + '</' + t + '>';
+        }).join('') + '</tr>';
       }).join('') + '</table>';
       if (b.link) h += '<p class="go"><a href="' + esc(pageHref(b.page)) + '">' + esc(b.link) + '</a></p>';
     });
@@ -282,7 +310,7 @@
       if (pg.main) {
         page.appendChild(el('div', 'crest full', '<div class="cicon">' + icon(P.icon) + '</div><div><h2>' + esc(P.name) + '</h2><p>Class Design</p></div>'));
         page.appendChild(el('p', 'pagehead', esc(pg.text)));
-        page.appendChild(el('dl', 'facts', pg.facts.map(function (f) { return '<dt>' + esc(f[0]) + '</dt><dd>' + esc(f[1]) + '</dd>'; }).join('')));
+        page.appendChild(el('dl', 'facts', pg.facts.map(function (f) { return '<dt>' + esc(f[0]) + '</dt><dd>' + esc(autoCell(f[0], f[1], P.name)) + '</dd>'; }).join('')));
       } else {
         page.appendChild(el('div', 'crest full',
           '<div class="cicon"><div class="sicon big" style="--sc:' + pg.color + '">' + esc(pg.title[0]) + '</div></div>' +

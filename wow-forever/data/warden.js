@@ -29,8 +29,8 @@ window.PAGE = {
           ["Armor", "Mail"],
           ["Resource", "Vengeance"],
           ["Weapons", "Bladed Weapons, Thrown Knives"],
-          ["Alliance", "Night Elf"],
-          ["Horde", "Undecided"]
+          ["Alliance", "auto"],
+          ["Horde", "auto"]
         ],
         "sections": [
           {

@@ -57,7 +57,7 @@ window.PAGE = {
                       ["Starting zone", "TBD"],
                       ["Home", "TBD"],
                       ["Racial mount", "TBD"],
-                      ["Classes", "Warrior, Paladin, Hunter, Priest, Tinker, Bard"]
+                      ["Classes", "auto"]
                     ]
                   },
                   { "h": "Racials" },
@@ -78,7 +78,7 @@ window.PAGE = {
                       ["Starting zone", "TBD"],
                       ["Home", "TBD"],
                       ["Racial mount", "TBD"],
-                      ["Classes", "Warrior, Rogue, Mage, Warlock, Necromancer, Tinker, Illusionist"]
+                      ["Classes", "auto"]
                     ]
                   },
                   { "h": "Racials" },
@@ -99,7 +99,7 @@ window.PAGE = {
                       ["Starting zone", "TBD"],
                       ["Home", "TBD"],
                       ["Racial mount", "TBD"],
-                      ["Classes", "Hunter, Druid, Shaman, Tinker, Bard"]
+                      ["Classes", "auto"]
                     ]
                   },
                   { "h": "Racials" },
@@ -137,7 +137,7 @@ window.PAGE = {
                       ["Starting zone", "TBD"],
                       ["Home", "TBD"],
                       ["Racial mount", "TBD"],
-                      ["Classes", "TBD"]
+                      ["Classes", "auto"]
                     ]
                   },
                   { "h": "Racials" },
@@ -158,7 +158,7 @@ window.PAGE = {
                       ["Starting zone", "TBD"],
                       ["Home", "TBD"],
                       ["Racial mount", "TBD"],
-                      ["Classes", "TBD"]
+                      ["Classes", "auto"]
                     ]
                   },
                   { "h": "Racials" },
@@ -181,7 +181,7 @@ window.PAGE = {
                   ["Starting zone", "TBD"],
                   ["Home", "TBD"],
                   ["Racial mount", "TBD"],
-                  ["Classes", "Warrior, Hunter, Mage, Warlock, Illusionist, Warden, San'layn"]
+                  ["Classes", "auto"]
                 ]
               },
               { "h": "Racials" },
@@ -201,7 +201,7 @@ window.PAGE = {
                   ["Starting zone", "TBD"],
                   ["Home", "TBD"],
                   ["Racial mount", "TBD"],
-                  ["Classes", "TBD"]
+                  ["Classes", "auto"]
                 ]
               },
               { "h": "Racials" },
@@ -244,7 +244,7 @@ window.PAGE = {
                       ["Starting zone", "TBD"],
                       ["Home", "TBD"],
                       ["Racial mount", "TBD"],
-                      ["Classes", "Warrior, Hunter, Rogue, Priest, Shaman, Mage, Illusionist, Bard"]
+                      ["Classes", "auto"]
                     ]
                   },
                   { "h": "Racials" },
@@ -265,7 +265,7 @@ window.PAGE = {
                       ["Starting zone", "TBD"],
                       ["Home", "TBD"],
                       ["Racial mount", "TBD"],
-                      ["Classes", "TBD"]
+                      ["Classes", "auto"]
                     ]
                   },
                   { "h": "Racials" },
@@ -285,7 +285,7 @@ window.PAGE = {
                       ["Starting zone", "TBD"],
                       ["Home", "TBD"],
                       ["Racial mount", "TBD"],
-                      ["Classes", "TBD"]
+                      ["Classes", "auto"]
                     ]
                   },
                   { "h": "Racials" },
@@ -307,7 +307,7 @@ window.PAGE = {
                   ["Starting zone", "TBD"],
                   ["Home", "TBD"],
                   ["Racial mount", "TBD"],
-                  ["Classes", "Warrior, Rogue, Mage, Warlock, Tinker, Bard"]
+                  ["Classes", "auto"]
                 ]
               },
               { "h": "Racials" },
@@ -328,7 +328,7 @@ window.PAGE = {
                   ["Starting zone", "TBD"],
                   ["Home", "TBD"],
                   ["Racial mount", "TBD"],
-                  ["Classes", "Warrior, Hunter, Shaman, Mage, Warlock, Necromancer"]
+                  ["Classes", "auto"]
                 ]
               },
               { "h": "Racials" },
@@ -369,7 +369,7 @@ window.PAGE = {
                       ["Starting zone", "TBD"],
                       ["Home", "TBD"],
                       ["Racial mount", "TBD"],
-                      ["Classes", "Priest, Mage, Illusionist, Bard, Warden, San'layn"]
+                      ["Classes", "auto"]
                     ]
                   },
                   { "h": "Racials" },
@@ -389,7 +389,7 @@ window.PAGE = {
                       ["Starting zone", "TBD"],
                       ["Home", "TBD"],
                       ["Racial mount", "TBD"],
-                      ["Classes", "Paladin, Priest, Mage, Illusionist, Warden, San'layn"]
+                      ["Classes", "auto"]
                     ]
                   },
                   { "h": "Racials" },
@@ -428,7 +428,7 @@ window.PAGE = {
                       ["Starting zone", "TBD"],
                       ["Home", "TBD"],
                       ["Racial mount", "TBD"],
-                      ["Classes", "Hunter, Druid, Shaman, Bard"]
+                      ["Classes", "auto"]
                     ]
                   },
                   { "h": "Racials" },
@@ -448,7 +448,7 @@ window.PAGE = {
                       ["Starting zone", "TBD"],
                       ["Home", "TBD"],
                       ["Racial mount", "TBD"],
-                      ["Classes", "Hunter, Druid, Shaman, Warden"]
+                      ["Classes", "auto"]
                     ]
                   },
                   { "h": "Racials" },
@@ -469,17 +469,7 @@ window.PAGE = {
           "title": "Races by Class",
           "tag": "Reference",
           "body": [
-            {
-              "table": [
-                ["Class", "Alliance", "Horde"],
-                ["Tinker", "Gnome, Bronzebeard, Dark Iron, Wildhammer", "Goblin"],
-                ["Illusionist", "Human, Gnome, Dark Iron, Naga, High Elf", "Darkspear, Undead, Blood Elf"],
-                ["Bard", "Human, Bronzebeard, Night Elf, Gnome, Wildhammer, High Elf, Dryad", "Orc, Tauren, Darkspear, Goblin"],
-                ["Necromancer", "Human, Dark Iron", "Undead, Orc, Ogre"],
-                ["Warden", "Night Elf, Naga, High Elf", "Blood Elf, Briarborn"],
-                ["San'layn", "Naga, High Elf", "Blood Elf"]
-              ]
-            }
+            { "roster": "by-class" }
           ]
         },
         {

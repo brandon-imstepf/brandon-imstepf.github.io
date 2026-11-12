@@ -45,7 +45,7 @@ window.CREATE = {
       "body": [
         { "note": "Alliance · Original race" },
         { "table": [["", ""], ["Faction", "Alliance"], ["Starting zone", "Northshire Valley"], ["Home", "Stormwind"], ["Racial mount", "Horse"],
-          ["Classes", "Warrior, Paladin, Rogue, Priest, Mage, Warlock, Illusionist, Bard, Necromancer"]] },
+          ["Classes", "auto"]] },
         { "h": "Racials" },
         { "h4": "At launch", "note": "Original game", "text": "Perception, The Human Spirit, Sword Specialization, Mace Specialization, Diplomacy." }
       ],
@@ -64,7 +64,7 @@ window.CREATE = {
       "body": [
         { "note": "Alliance · Original race" },
         { "table": [["", ""], ["Faction", "Alliance"], ["Starting zone", "Shadowglen"], ["Home", "Darnassus"], ["Racial mount", "Nightsaber"],
-          ["Classes", "Warrior, Hunter, Rogue, Priest, Druid, Bard, Warden"]] },
+          ["Classes", "auto"]] },
         { "h": "Racials" },
         { "h4": "At launch", "note": "Original game", "text": "Shadowmeld, Quickness, Wisp Spirit, Nature Resistance." }
       ],
@@ -75,7 +75,7 @@ window.CREATE = {
       "body": [
         { "note": "Alliance · Original race" },
         { "table": [["", ""], ["Faction", "Alliance"], ["Starting zone", "Coldridge Valley"], ["Home", "Ironforge"], ["Racial mount", "Mechanostrider"],
-          ["Classes", "Warrior, Rogue, Mage, Warlock, Tinker, Illusionist, Bard"]] },
+          ["Classes", "auto"]] },
         { "h": "Racials" },
         { "h4": "At launch", "note": "Original game", "text": "Escape Artist, Expansive Mind, Arcane Resistance, Engineering Specialist." }
       ],
@@ -103,7 +103,7 @@ window.CREATE = {
       "body": [
         { "note": "Horde · Original race" },
         { "table": [["", ""], ["Faction", "Horde"], ["Starting zone", "Valley of Trials"], ["Home", "Orgrimmar"], ["Racial mount", "Wolf"],
-          ["Classes", "Warrior, Hunter, Rogue, Shaman, Warlock, Bard, Necromancer"]] },
+          ["Classes", "auto"]] },
         { "h": "Racials" },
         { "h4": "At launch", "note": "Original game", "text": "Blood Fury, Hardiness, Command, Axe Specialization." }
       ],
@@ -114,7 +114,7 @@ window.CREATE = {
       "body": [
         { "note": "Horde · Original race" },
         { "table": [["", ""], ["Faction", "Horde"], ["Starting zone", "Deathknell"], ["Home", "Undercity"], ["Racial mount", "Skeletal Horse"],
-          ["Classes", "Warrior, Rogue, Priest, Mage, Warlock, Illusionist, Necromancer"]] },
+          ["Classes", "auto"]] },
         { "h": "Racials" },
         { "h4": "At launch", "note": "Original game", "text": "Will of the Forsaken, Cannibalize, Underwater Breathing, Shadow Resistance." }
       ],
@@ -125,7 +125,7 @@ window.CREATE = {
       "body": [
         { "note": "Horde · Original race" },
         { "table": [["", ""], ["Faction", "Horde"], ["Starting zone", "Camp Narache"], ["Home", "Thunder Bluff"], ["Racial mount", "Kodo"],
-          ["Classes", "Warrior, Hunter, Shaman, Druid, Bard"]] },
+          ["Classes", "auto"]] },
         { "h": "Racials" },
         { "h4": "At launch", "note": "Original game", "text": "War Stomp, Endurance, Cultivation, Nature Resistance." }
       ],

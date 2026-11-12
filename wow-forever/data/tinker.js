@@ -29,8 +29,8 @@ window.PAGE = {
           ["Armor", "Mail"],
           ["Resource", "Heat"],
           ["Weapons", "Guns, Maces, Tools"],
-          ["Alliance", "Gnome, Dwarf"],
-          ["Horde", "Goblin"]
+          ["Alliance", "auto"],
+          ["Horde", "auto"]
         ],
         "sections": [
           {

@@ -50,6 +50,50 @@ body.cc[data-faction="horde"]    { --glow: rgba(216,69,43,.28);  --sky: #2e100c;
   color: var(--grey); font-size: 13px; text-align: center; padding: 20px;
 }
 
+/* ── WIP banner over the preview ── */
+.cc-wip {
+  position: absolute; top: 14px; left: 50%; transform: translateX(-50%); z-index: 2;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 6px 26px 8px; pointer-events: none; white-space: nowrap;
+  background:
+    linear-gradient(rgba(10,9,8,.86), rgba(10,9,8,.86)) padding-box,
+    repeating-linear-gradient(45deg, #ffd100 0 10px, #1a1408 10px 20px) border-box;
+  border: 4px solid transparent; border-radius: 6px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.6);
+}
+.cc-wip strong { font: 46px/1 var(--quest); font-weight: 400; color: var(--gold); letter-spacing: .12em; text-shadow: 0 2px 0 #000; }
+.cc-wip span { font-size: 12.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--tan); }
+
+/* ── sub-race pop-out, beside the chosen race icon ── */
+.cc-fly {
+  position: fixed; z-index: 4; display: flex; flex-direction: column; gap: 6px;
+  padding: 8px; min-width: 180px;
+  background: linear-gradient(180deg, rgba(30,26,20,.97), rgba(12,11,9,.97));
+  border: 1px solid var(--bronze-hi); border-radius: 6px;
+  box-shadow: inset 0 0 0 1px #000, 0 8px 24px rgba(0,0,0,.7);
+}
+.cc-fly[hidden] { display: none; }
+.cc-fly::before {   /* pointer toward the race icon */
+  content: ''; position: absolute; left: -7px; top: var(--arrow, 22px);
+  border: 7px solid transparent; border-left: 0; border-right-color: var(--bronze-hi);
+}
+.cc-fly.below::before { left: var(--arrow-x, 22px); top: -7px; border: 7px solid transparent; border-top: 0; border-bottom-color: var(--bronze-hi); }
+.cc-flyopt {
+  display: flex; align-items: center; gap: 10px; cursor: pointer; text-align: left;
+  padding: 4px 10px 4px 4px; border-radius: 4px;
+  font: 14px var(--ui); color: var(--tan);
+  background: rgba(0,0,0,.35); border: 1px solid var(--bronze-lo);
+}
+.cc-flyopt:hover { color: #fff; border-color: var(--bronze-hi); }
+.cc-flyopt[aria-pressed="true"] { color: var(--gold); border-color: var(--gold); box-shadow: 0 0 8px rgba(255,209,0,.35); }
+.cc-flyopt:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.cc-flyopt img, .cc-flyopt .cc-flyletter {
+  width: 40px; height: 40px; border-radius: 4px; flex-shrink: 0; border: 1px solid #000;
+  background: radial-gradient(circle at 50% 35%, var(--fbg, #233a66), #0b0d14 75%);
+}
+.cc-flyletter { display: flex; align-items: center; justify-content: center; font: 18px var(--quest); }
+.cc-flyopt small { display: block; font-size: 11px; color: var(--grey); }
+
 /* ── panels ── */
 .cc-panel {
   position: fixed; z-index: 2; overflow-y: auto;
@@ -211,6 +255,9 @@ body.cc[data-faction="horde"]    { --glow: rgba(216,69,43,.28);  --sky: #2e100c;
   .cc-panel { position: relative; left: auto; right: auto; top: auto; bottom: auto; width: auto; margin: 12px 16px; }
   .cc-races { grid-template-columns: repeat(auto-fill, minmax(54px, 1fr)); }
   .cc-classes { grid-template-columns: repeat(auto-fill, minmax(46px, 1fr)); }
+  .cc-wip { top: 54px; white-space: normal; text-align: center; width: max-content; max-width: calc(100% - 32px); padding: 6px 16px 8px; }
+  .cc-wip strong { font-size: 34px; }
+  .cc-wip span { font-size: 11px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .cc-icon, body.cc::before { transition: none; }

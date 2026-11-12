@@ -29,8 +29,8 @@ window.PAGE = {
           ["Armor", "Cloth"],
           ["Resource", "Mana and Veil"],
           ["Weapons", "Staves, Wands, Daggers"],
-          ["Alliance", "Human, Gnome"],
-          ["Horde", "Troll, Undead"]
+          ["Alliance", "auto"],
+          ["Horde", "auto"]
         ],
         "sections": [
           {
@@ -59,7 +59,7 @@ window.PAGE = {
               {
                 "name": "Phantasms",
                 "cost": "Mana",
-                "text": "Calls a beast from your bestiary. It is real for a few seconds."
+                "text": "Calls a temporary phantasm from your menagerie."
               }
             ]
           }
@@ -72,7 +72,7 @@ window.PAGE = {
         "role": "Ranged DPS",
         "spec": "mirrorweaver",
         "color": "#ff6ad5",
-        "text": "The Mirrorweaver fills the field with copies of the caster. Every bolt is cast again by each image. When the enemy closes, the true caster is already elsewhere.",
+        "text": "The Mirrorweaver fills the field with illusory copies of the caster who repeat their spells. When the enemy closes in, the true Mirrorweaver is already elsewhere.",
         "sections": [
           {
             "heading": "Abilities",
@@ -80,7 +80,7 @@ window.PAGE = {
               {
                 "name": "Mirror Image",
                 "cost": "25 Mana",
-                "text": "Creates 3 images of the caster. Your images cast Prismatic Bolt whenever you do."
+                "text": "Creates 3 images of the caster in an area around you. Your images cast Prismatic Bolt whenever you do."
               },
               {
                 "name": "Swap",
@@ -103,25 +103,25 @@ window.PAGE = {
         "role": "Ranged DPS",
         "spec": "menagerie",
         "color": "#7affd8",
-        "text": "The Menagerie keeps a bestiary of every creature it has fought and calls them back as phantasms. Wolves run the enemy down, drakes breathe from above, and storm spirits strike at anything near.",
+        "text": "The Menagerie keeps a bestiary of every enemy it has fought and keeps a store of six at time, calling them back as phantasms. Humanoids strike and hamper, beasts howl and bite, and dragons breathe arcane fire.",
         "sections": [
           {
             "heading": "Abilities",
             "spells": [
               {
-                "name": "Phantasm: Wolf",
+                "name": "Phantasm: Defias Bandit",
+                "cost": "20 Mana",
+                "text": "Summons a phantasmal human that slows the movement speed of enemies."
+              },
+              {
+                "name": "Phantasm: Dire Wolf",
                 "cost": "15 Mana",
-                "text": "Summons a phantasmal wolf that attacks the target."
+                "text": "Summons a phantasmal wolf that lets out a fearsome howl."
               },
               {
                 "name": "Phantasm: Drake",
                 "cost": "25 Mana",
                 "text": "Summons a phantasmal drake that breathes on all enemies before it."
-              },
-              {
-                "name": "Phantasm: Storm",
-                "cost": "20 Mana",
-                "text": "Summons a storm spirit that shocks nearby enemies."
               },
               {
                 "name": "Stampede",
@@ -139,7 +139,7 @@ window.PAGE = {
         "role": "Tank",
         "spec": "deceiver",
         "color": "#7ab8ff",
-        "text": "The Deceiver survives because the enemy is fighting a lie. Illusory Health is lost before real health and cannot be restored by healers. Decoys and Displacement cause many attacks to miss outright.",
+        "text": "They fight a lie. They fight the Deceiver. Decoys, Displacement and Illusory Health captivate their enemies.",
         "sections": [
           {
             "heading": "Abilities",
@@ -157,7 +157,7 @@ window.PAGE = {
               {
                 "name": "Decoy",
                 "cost": "15 Mana",
-                "text": "Creates a decoy of the caster. Enemies attack the decoy instead of you."
+                "text": "Creates an illusory decoy of the caster. The decoy takes damage instead of you."
               },
               {
                 "name": "Displacement",
@@ -183,26 +183,13 @@ window.PAGE = {
           "title": "Illusory Health",
           "tag": "Mechanic",
           "body": [
-            "The Deceiver holds the line in cloth. It carries a second health bar, Illusory Health, which is lost before real health.",
+            "The Deceiver carries a second health bar, Illusory Health, which is lost before real health.",
             "Healers cannot restore Illusory Health. Only the Deceiver can, by spending Veil on Illusory Shell.",
             {
               "h": "Objectives"
             },
             {
               "list": ["Lose Illusory Health first", "Restore it with Veil"]
-            }
-          ]
-        },
-        {
-          "title": "Unsettled Names",
-          "tag": "Undecided",
-          "body": [
-            "Two names are not final: Veil, the secondary resource, and Deceiver, the tanking specialization. Glamour was rejected as a name.",
-            {
-              "h": "Objectives"
-            },
-            {
-              "list": ["Choose a name for Veil", "Choose a name for Deceiver"]
             }
           ]
         }
