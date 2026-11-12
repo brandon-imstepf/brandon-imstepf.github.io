@@ -129,14 +129,14 @@ window.PAGE = {
                 "tag": "New",
                 "body": [
                   { "note": "Draenei · Alliance" },
-                  "Lore: TBD.",
+                  "Lore: A faction of uncorrupted eredar fleeing the Burning Legion. They have traveled throughout the vast Great Dark Beyond, and have now arrived on Azeroth. They are a noble and spiritual people, with a strong connection to the Light.",
                   {
                     "table": [
                       ["", ""],
                       ["Faction", "Alliance"],
-                      ["Starting zone", "TBD"],
-                      ["Home", "TBD"],
-                      ["Racial mount", "TBD"],
+                      ["Starting zone", "Azuremyst Isle"],
+                      ["Home", "Exodar"],
+                      ["Racial mount", "Elekk"],
                       ["Classes", "auto"]
                     ]
                   },
@@ -150,14 +150,14 @@ window.PAGE = {
                 "tag": "New",
                 "body": [
                   { "note": "Draenei · Alliance" },
-                  "Lore: TBD.",
+                  "Lore: Having been scarred by the fel energies of the Burning Legion, the Broken join the Draenei in their fight against the Legion. They are a resilient and resourceful people, with a deep understanding of fel magic.`",
                   {
                     "table": [
                       ["", ""],
                       ["Faction", "Alliance"],
-                      ["Starting zone", "TBD"],
-                      ["Home", "TBD"],
-                      ["Racial mount", "TBD"],
+                      ["Starting zone", "Azuremyst Isle"],
+                      ["Home", "Exodar"],
+                      ["Racial mount", "Panthara"],
                       ["Classes", "auto"]
                     ]
                   },
@@ -172,14 +172,13 @@ window.PAGE = {
             "tag": "Alliance",
             "body": [
               { "note": "Alliance" },
-              "The Naga have reconnected with their elven roots and allied with the Night Elves.",
-              "Lore: TBD.",
+              "Lore: Formerly Highborne night elves, the Naga were transformed into serpentine beings after their queen Azshara dedication of her people to the Old Gods. A rogue faction has allied with the Alliance, seeking to reclaim their lost heritage and protect Azeroth from the threats of the deep sea.",
               {
                 "table": [
                   ["", ""],
                   ["Faction", "Alliance"],
-                  ["Starting zone", "TBD"],
-                  ["Home", "TBD"],
+                  ["Starting zone", "The Drowned Bough"],
+                  ["Home", "Zoram Rebuilt"],
                   ["Racial mount", "TBD"],
                   ["Classes", "auto"]
                 ]
@@ -193,13 +192,13 @@ window.PAGE = {
             "tag": "Alliance",
             "body": [
               { "note": "Alliance" },
-              "Lore: TBD.",
+              "Lore: Cursed by ancient magic, the once human citizens of Gilneas are now worgen, lupine beings that walk upright but hunt and howl as wolves. They have joined the Alliance to fight against the darkness that threatens their homeland and to seek a cure for their affliction.",
               {
                 "table": [
                   ["", ""],
                   ["Faction", "Alliance"],
-                  ["Starting zone", "TBD"],
-                  ["Home", "TBD"],
+                  ["Starting zone", "Gilnean Forest"],
+                  ["Home", "Gilneas"],
                   ["Racial mount", "TBD"],
                   ["Classes", "auto"]
                 ]
@@ -241,8 +240,8 @@ window.PAGE = {
                     "table": [
                       ["", ""],
                       ["Faction", "Horde"],
-                      ["Starting zone", "TBD"],
-                      ["Home", "TBD"],
+                      ["Starting zone", "Durotar, Echo Isles"],
+                      ["Home", "Echo Isles"],
                       ["Racial mount", "TBD"],
                       ["Classes", "auto"]
                     ]
@@ -299,7 +298,7 @@ window.PAGE = {
             "tag": "Horde",
             "body": [
               { "note": "Horde" },
-              "Lore: TBD.",
+              "Lore: TBD. They like money, and they like explosions.",
               {
                 "table": [
                   ["", ""],
@@ -320,7 +319,7 @@ window.PAGE = {
             "tag": "Horde",
             "body": [
               { "note": "Horde" },
-              "Lore: TBD.",
+              "Lore: TBD. ",
               {
                 "table": [
                   ["", ""],
@@ -420,12 +419,12 @@ window.PAGE = {
                 "tag": "Alliance",
                 "body": [
                   { "note": "Child of Nature · Alliance" },
-                  "Lore: Sons and Daughters of Cenarius, and through him grandchildren of Elune. Deer-bodied. Foliage could follow the four seasons as a customization option.",
+                  "Lore: Sons and Daughters of Cenarius, and through him grandchildren of Elune. Protectors of all things that grow.",
                   {
                     "table": [
                       ["", ""],
                       ["Faction", "Alliance"],
-                      ["Starting zone", "TBD"],
+                      ["Starting zone", "The Emerald Dream"],
                       ["Home", "TBD"],
                       ["Racial mount", "TBD"],
                       ["Classes", "auto"]
@@ -440,13 +439,13 @@ window.PAGE = {
                 "tag": "Horde",
                 "body": [
                   { "note": "Child of Nature · Horde" },
-                  "Lore: Grown from the thorns of Agamaggan's blood in the Barrens, the same brambles the Quilboar claim. They reject the Quilboar and stand with the Tauren. Bark-hided, crowned with briars.",
+                  "Lore: Grown from the thorns of Agamaggan's blood in the Barrens, the newly sprouted Briarborn were rejected by the Quillboar as an affront to their god. Embraced by the Tauren, the Briarborn have joined the Horde to protect their new home and the natural world.",
                   {
                     "table": [
                       ["", ""],
                       ["Faction", "Horde"],
-                      ["Starting zone", "TBD"],
-                      ["Home", "TBD"],
+                      ["Starting zone", "Mulgore"],
+                      ["Home", "Thunderbluff (Roots Quarter)"],
                       ["Racial mount", "TBD"],
                       ["Classes", "auto"]
                     ]
@@ -473,23 +472,10 @@ window.PAGE = {
           ]
         },
         {
-          "title": "Faction Balance",
-          "tag": "Reference",
-          "body": [
-            {
-              "table": [
-                ["Faction", "Original", "New", "Total"],
-                ["Alliance", "Human, Bronzebeard Dwarf, Night Elf, Gnome", "Dark Iron, Wildhammer, Draenei, Broken, Naga, Worgen, High Elf, Dryad", "12"],
-                ["Horde", "Orc, Undead, Tauren, Darkspear Troll", "Revantusk, Frostmane, Goblin, Ogre, Blood Elf, Briarborn", "10"]
-              ]
-            }
-          ]
-        },
-        {
           "title": "More Ideas",
           "tag": "Ideas",
           "body": [
-            "Other races that would suit the setting:",
+            "Other races that could be kooky:",
             {
               "list": ["Furbolgs", "Centaur", "Vrykul", "Tuskarr", "Satyr", "Nerubian", "Draconid"]
             }
