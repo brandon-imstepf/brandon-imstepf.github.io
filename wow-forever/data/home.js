@@ -258,6 +258,22 @@ window.PAGE = {
       ]
     },
     {
+      "group": "Expansions",
+      "entries": [
+        {
+          "title": "Race Expansion",
+          "tag": "Planning",
+          "body": [
+            "New playable races for the Alliance (Dark Iron and Wildhammer Dwarves, Draenei, Broken, Naga, Worgen, High Elf, Dryad) and the Horde (Revantusk and Frostmane Trolls, Goblin, Ogre, Blood Elf, Briarborn).",
+            {
+              "link": "Open the Races page",
+              "page": "races"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "group": "Design Pillars",
       "entries": [
         {

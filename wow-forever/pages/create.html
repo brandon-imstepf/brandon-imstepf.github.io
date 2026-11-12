@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Character Creation · WoW Forever</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Metamorphous&display=swap">
+<link rel="stylesheet" href="../assets/create.css">
+</head>
+<body class="cc" data-faction="alliance">
+<!-- Race text lives in ../data/races.js; original races, classes and silhouettes in ../data/create.js -->
+
+<div class="cc-view" id="ccView">
+  <canvas id="ccCanvas" aria-label="Character preview. Drag to rotate."></canvas>
+  <div class="cc-loading" id="ccLoading" hidden>Loading model&hellip;</div>
+</div>
+
+<a class="cc-back" href="races.html">&#8249; Races</a>
+
+<aside class="cc-panel cc-left" aria-label="Choose race and class">
+  <section class="cc-faction cc-faction--alliance">
+    <h2><span class="cc-crest" data-crest="alliance"></span>Alliance</h2>
+    <div class="cc-grid cc-races" id="raceAlliance"></div>
+  </section>
+  <section class="cc-faction cc-faction--horde">
+    <h2><span class="cc-crest" data-crest="horde"></span>Horde</h2>
+    <div class="cc-grid cc-races" id="raceHorde"></div>
+  </section>
+  <section class="cc-faction cc-faction--split">
+    <h2><span class="cc-crest" data-crest="split"></span>Either Faction</h2>
+    <div class="cc-grid cc-races" id="raceSplit"></div>
+  </section>
+  <section>
+    <h2>Class</h2>
+    <div class="cc-grid cc-classes" id="classGrid"></div>
+  </section>
+</aside>
+
+<aside class="cc-panel cc-right" aria-live="polite">
+  <h1 id="raceName"></h1>
+  <div class="cc-factionline"><span class="cc-crest" id="factionCrest"></span><span id="factionName"></span></div>
+  <div class="cc-forms" id="raceForms" role="tablist"></div>
+  <div class="cc-body" id="raceBody"></div>
+  <div class="cc-classinfo" id="classInfo"></div>
+</aside>
+
+<div class="cc-bottom">
+  <button class="cc-rot" id="rotL" type="button" aria-label="Rotate left">&#10226;</button>
+  <input class="cc-name" id="charName" type="text" maxlength="12" placeholder="Name" aria-label="Character name" autocomplete="off" spellcheck="false">
+  <button class="cc-rot" id="rotR" type="button" aria-label="Rotate right">&#10227;</button>
+  <button class="cc-random" id="randomBtn" type="button">Randomize</button>
+  <button class="cc-create" id="createBtn" type="button">Create Character</button>
+</div>
+
+<div class="cc-toast" id="ccToast" role="status" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="../assets/icons.js"></script>
+<script src="../data/races.js"></script>
+<script>window.RACES = window.PAGE; window.PAGE = null;</script>
+<script src="../data/create.js"></script>
+<script src="../assets/create.js"></script>
+</body>
+</html>

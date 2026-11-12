@@ -67,6 +67,18 @@ window.SITE = {
       "name": "Professions",
       "sub": "All crafts and gathering",
       "icon": "rail-professions"
+    },
+    {
+      "key": "races",
+      "name": "Races",
+      "sub": "New playable races",
+      "icon": "rail-races"
+    },
+    {
+      "key": "create",
+      "name": "Character Creation",
+      "sub": "Try every race and class",
+      "icon": "rail-create"
     }
   ]
 };

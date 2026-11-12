@@ -2352,6 +2352,36 @@ window.ICONS = {
     <rect x="1.5" y="1.5" width="61" height="61" rx="5" fill="none" stroke="#d9a35a" stroke-opacity=".6" stroke-width="1.5"/>
     </svg>`,
 
+  "rail-races": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+    <defs>
+    <radialGradient id="rg-races" cx=".5" cy=".35" r=".8">
+    <stop offset="0" stop-color="#8fbf7a" stop-opacity=".45"/>
+    <stop offset="1" stop-color="#0b0a0c"/>
+    </radialGradient>
+    </defs>
+    <rect fill="#0b0a0c"/>
+    <rect width="64" height="64" fill="url(#rg-races)"/>
+    <path d="M13 56 Q13 39 32 39 Q51 39 51 56Z" fill="#8fbf7a" stroke="#000" stroke-width="1.5" stroke-linejoin="round"/>
+    <circle cx="32" cy="25" r="10" fill="#8fbf7a" stroke="#000" stroke-width="1.5"/>
+    <path d="M38 17 Q44 6 54 7 Q53 17 42 20Z" fill="#5f8f4e" stroke="#000" stroke-width="1.2" stroke-linejoin="round"/>
+    <path d="M40 18 L50 10" stroke="#000" stroke-width="1" fill="none"/>
+    <rect x="1.5" y="1.5" width="61" height="61" rx="5" fill="none" stroke="#8fbf7a" stroke-opacity=".6" stroke-width="1.5"/>
+    </svg>`,
+  "rail-create": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+    <defs>
+    <radialGradient id="rg-create" cx=".5" cy=".35" r=".8">
+    <stop offset="0" stop-color="#ffd100" stop-opacity=".4"/>
+    <stop offset="1" stop-color="#0b0a0c"/>
+    </radialGradient>
+    </defs>
+    <rect width="64" height="64" fill="url(#rg-create)"/>
+    <ellipse cx="32" cy="53" rx="20" ry="5" fill="#8a6a2c" stroke="#000" stroke-width="1.5"/>
+    <path d="M22 51 Q22 36 32 36 Q42 36 42 51Z" fill="#ffd100" stroke="#000" stroke-width="1.5" stroke-linejoin="round"/>
+    <circle cx="32" cy="27" r="8" fill="#ffd100" stroke="#000" stroke-width="1.5"/>
+    <path d="M10 22 A22 22 0 0 1 20 10" fill="none" stroke="#ffd100" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M20 10 L14 10 M20 10 L19 16" fill="none" stroke="#ffd100" stroke-width="2.5" stroke-linecap="round"/>
+    <rect x="1.5" y="1.5" width="61" height="61" rx="5" fill="none" stroke="#ffd100" stroke-opacity=".6" stroke-width="1.5"/>
+    </svg>`,
   "rail-sanlayn": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
     <defs>
     <radialGradient id="rg-sanlayn" cx=".5" cy=".35" r=".8">

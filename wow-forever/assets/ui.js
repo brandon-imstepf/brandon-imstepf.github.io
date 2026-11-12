@@ -228,11 +228,27 @@
     def.groups.forEach(function (g) {
       list.appendChild(el('div', 'qhead', '&#9662; ' + esc(g.group)));
       g.entries.forEach(function (it) {
-        var b = el('button', 'qrow', '<span>' + esc(it.title) + '</span><span>' + esc(it.tag || '') + '</span>');
+        var b = el('button', 'qrow', '<span>' + (it.options ? '<i class="qcaret">&#9656;</i> ' : '') + esc(it.title) + '</span><span>' + esc(it.tag || '') + '</span>');
         b.type = 'button';
         var i = items.length;
-        b.addEventListener('click', function () { pick(i); });
         list.appendChild(b); rows.push(b); items.push(it);
+        if (!it.options) { b.addEventListener('click', function () { pick(i); }); return; }
+        /* An entry with "options" is a dropdown: clicking it shows its overview and opens its sub-entries. */
+        var subs = it.options.map(function (op) {
+          var sb = el('button', 'qrow qsub', '<span>' + esc(op.title) + '</span><span>' + esc(op.tag || '') + '</span>');
+          sb.type = 'button'; sb.hidden = true;
+          var j = items.length;
+          sb.addEventListener('click', function () { pick(j); });
+          list.appendChild(sb); rows.push(sb); items.push(op);
+          return sb;
+        });
+        b.setAttribute('aria-expanded', 'false');
+        b.addEventListener('click', function () {
+          var open = b.getAttribute('aria-expanded') !== 'true';
+          b.setAttribute('aria-expanded', String(open));
+          subs.forEach(function (sb) { sb.hidden = !open; });
+          pick(i);
+        });
       });
     });
     function pick(i) {

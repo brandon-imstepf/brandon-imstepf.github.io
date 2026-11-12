@@ -530,6 +530,10 @@ body.wow :focus-visible {
   background: rgba(255,209,0,.22);
   color: #fff;
 }
+.qrow[hidden] { display: none; }
+.qsub { padding-left: 24px; font-size: 13px; }
+.qcaret { font-style: normal; display: inline-block; transition: transform .15s; }
+.qrow[aria-expanded="true"] .qcaret { transform: rotate(90deg); }
 .qhead {
   color: var(--grey);
   padding: 4px 8px 3px;
