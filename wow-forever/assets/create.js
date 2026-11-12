@@ -613,7 +613,7 @@
       b.title = names; b.setAttribute('aria-label', names);
       b.innerHTML = '<span class="cc-letter">' + esc(r.name.charAt(0)) + '</span>' +
         (r.forms.length > 1 ? '<span class="cc-forms-badge">' + r.forms.length + '</span>' : '');
-      b.addEventListener('click', function () { pickRace(i); });
+      b.addEventListener('click', function () { flyOpen = true; pickRace(i); });
       (dest[r.group] || dest.alliance).appendChild(b);
       raceBtns.push(b);
     });
@@ -644,10 +644,10 @@
   }
 
   /* Sub-races pop out beside the chosen race icon. */
-  var fly = $('formFly');
+  var fly = $('formFly'), flyOpen = false;   // opens when a race icon is clicked, closes once a sub-race is chosen
   function showFly() {
     var r = RACES[sel.race];
-    if (r.forms.length < 2) { fly.hidden = true; return; }
+    if (!flyOpen || r.forms.length < 2) { fly.hidden = true; return; }
     fly.innerHTML = '';
     r.forms.forEach(function (o, j) {
       var b = document.createElement('button');
@@ -657,7 +657,11 @@
       b.style.setProperty('--fbg', o.faction === 'horde' ? '#5a1d14' : '#233a66');
       b.innerHTML = (src ? '<img alt="" src="' + src + '">' : '<span class="cc-flyletter">' + esc(o.name.charAt(0)) + '</span>') +
         '<span>' + esc(o.name) + (r.group === 'split' ? '<small>' + (o.faction === 'horde' ? 'Horde' : 'Alliance') + '</small>' : '') + '</span>';
-      b.addEventListener('click', function () { if (j !== r.formIdx) pickRace(sel.race, j); });
+      b.addEventListener('click', function () {
+        flyOpen = false;
+        if (j !== r.formIdx) pickRace(sel.race, j); else fly.hidden = true;
+        raceBtns[sel.race].focus();
+      });
       fly.appendChild(b);
     });
     fly.hidden = false;
@@ -681,7 +685,7 @@
   }
   window.addEventListener('resize', placeFly);
   window.addEventListener('scroll', placeFly, true);
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') fly.hidden = true; });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { flyOpen = false; fly.hidden = true; } });
 
   function pickRace(i, formIdx) {
     sel.race = i;
@@ -787,6 +791,7 @@
     var cl = r.forms[r.formIdx].classes;
     if (cl && cl.length) sel.cls = cl[Math.floor(Math.random() * cl.length)];
     yaw = 0.35;
+    flyOpen = false;
     pickRace(i);
   });
   $('createBtn').addEventListener('click', function () {
