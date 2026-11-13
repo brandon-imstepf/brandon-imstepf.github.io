@@ -6,6 +6,7 @@
     assets/icons.js            window.ICONS    new-class icons
     data/races.js              window.RACES    race text, factions, classes  (edit text there)
     data/create.js             window.CREATE   original races, classes, silhouettes, models
+    data/gear.js + assets/gear.js              gear items, class outfits, attachment points
     assets/create.js           this file
 
   Every figure here is an original placeholder silhouette built from simple shapes.
@@ -172,6 +173,12 @@
     var root = new THREE.Group(), body = new THREE.Group();
     root.add(body);
     var P = { tail: [], arms: [], mats: [mat, glowMat] };
+    var SOCK = {};   // attachment points for gear (assets/gear.js), lined up with the world
+    function socket(par, key, x, y, z, sc) {
+      var g = new THREE.Group(); g.name = 'Attach_' + key; g.position.set(x, y, z);
+      if (sc) g.scale.setScalar(sc);
+      par.add(g); SOCK[key] = g; return g;
+    }
 
     function ball(par, m, x, y, z, sx, sy, sz) {
       var o = new THREE.Mesh(GEO.s, m); o.position.set(x, y, z);
@@ -265,6 +272,11 @@
     var shR = 0.075 * Math.sqrt(B * AT);
     ball(spine, mat, -shX, shY, 0, shR, 0.075, shR);
     ball(spine, mat, shX, shY, 0, shR, 0.075, shR);
+    /* the character faces +z, so its right side is -x */
+    socket(spine, 'shoulderR', -shX, shY, 0, shR / 0.075);
+    socket(spine, 'shoulderL', shX, shY, 0, shR / 0.075);
+    socket(spine, 'back', 0, 0.44, -0.15 * B);
+    socket(spine, 'waist', 0, 0.06, 0, B);
 
     /* arms hang straight down whatever the hunch */
     for (s = -1; s <= 1; s += 2) {
@@ -279,6 +291,7 @@
       ball(arm, mat, el.x, el.y, el.z, 0.047 * Math.sqrt(B) * AT);
       rod(arm, el, wr, 0.047 * Math.sqrt(B) * AT, 0.036 * Math.sqrt(B) * AT);
       ball(arm, mat, wr.x, wr.y - 0.03, wr.z, 0.045 * Math.sqrt(B) * AT, 0.06, 0.04 * AT);
+      socket(arm, s < 0 ? 'handR' : 'handL', wr.x, wr.y - 0.04, wr.z + 0.01).rotation.z = -s * 0.12;
       if (L.claws) for (var c = -1; c <= 1; c++) spike(arm, mat, V(wr.x + c * 0.02, wr.y - 0.07, wr.z + 0.01), V(0, -1, 0.3), 0.06, 0.008);
       if (L.thorns) spike(arm, mat, V(s * 0.06, -0.22 * AL, -0.03), V(s * 0.6, 0.4, -0.6), 0.09, 0.02);
       P.arms.push(arm);
@@ -299,6 +312,7 @@
     head.rotation.x = -hunchX * 0.85;
     spine.add(head);
     P.head = head; P.headX = head.rotation.x;
+    socket(head, 'head', 0, 0, 0, hs);
 
     ball(head, mat, 0, 0, 0, 0.105 * hs, 0.12 * hs, 0.115 * hs);
     ball(head, mat, 0, -0.06 * hs, 0.035 * hs, 0.075 * hs * L.jaw, 0.05 * hs, 0.08 * hs);
@@ -393,6 +407,7 @@
     P.spine = spine; P.chest = chest; P.hunchX = hunchX; P.body = body;
     root.scale.setScalar(L.height);
     root.userData.parts = P;
+    root.userData.sockets = SOCK;
     return root;
   }
 
@@ -475,7 +490,7 @@
   }
 
   function setFigure(obj, faction) {
-    if (current) { holder.remove(current); disposeObj(current); }
+    if (current) { holder.remove(current); if (window.WFGear) WFGear.strip(current); disposeObj(current); }
     mixer = null;
     current = obj;
     obj.userData.born = clock ? clock.elapsedTime : 0;
@@ -483,6 +498,7 @@
     var col = new THREE.Color(FCOL[faction]);
     groundMat.color.copy(col); moteMat.color.copy(col);
     frameFigure(obj);
+    dress();
   }
 
   function animateFigure(obj, t) {
@@ -538,21 +554,10 @@
   }
 
   /* ---------- your own models (.glb) */
-  var gltfReady = null, loadToken = 0;
-  function needGLTF() {
-    if (gltfReady) return gltfReady;
-    gltfReady = new Promise(function (ok, fail) {
-      if (THREE.GLTFLoader) return ok();
-      var s = document.createElement('script');
-      s.src = 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js';
-      s.onload = function () { ok(); }; s.onerror = fail;
-      document.head.appendChild(s);
-    });
-    return gltfReady;
-  }
+  var loadToken = 0;
   function loadModel(form, token) {
     var note = $('ccLoading'); note.hidden = false;
-    needGLTF().then(function () {
+    WFGear.needGLTF().then(function () {
       new THREE.GLTFLoader().load(form.model, function (g) {
         if (token !== loadToken) return;
         note.hidden = true;
@@ -560,6 +565,8 @@
         var box = new THREE.Box3().setFromObject(obj), size = box.getSize(V(0, 0, 0));
         var want = 1.8 * ((form.look && form.look.height) || 1), k = want / (size.y || 1);
         var wrap = new THREE.Group(); wrap.add(obj);
+        wrap.userData.sockets = WFGear.findSockets(obj);   // Attach_HandR, Attach_Head, ...
+        wrap.userData.model = form.model;
         obj.scale.setScalar(k);
         var c = box.getCenter(V(0, 0, 0));
         obj.position.set(-c.x * k, -box.min.y * k, -c.z * k);
@@ -636,11 +643,48 @@
       b.innerHTML = classIcon(c);
       b.addEventListener('click', function () {
         if (b.getAttribute('aria-disabled') === 'true') return;
-        sel.cls = c.key; refresh(false);
+        sel.cls = c.key; if (GEARED) setGear(WFGear.outfit(c.key)); refresh(false);
       });
       $('classGrid').appendChild(b);
       classBtns[c.key] = b;
     });
+  }
+
+  /* ---------- gear (data/gear.js, assets/gear.js) */
+  var GEARED = !!window.WFGear, gearSel = {}, showPts = false, warned = {};
+  function gearIds() { return GEARED ? WFGear.SLOTS.map(function (s) { return gearSel[s]; }).filter(Boolean) : []; }
+  function setGear(ids) {
+    gearSel = {};
+    if (!GEARED) return;
+    (ids || []).forEach(function (id) { var it = WFGear.item(id); if (it) gearSel[it.slot] = id; });
+    WFGear.SLOTS.forEach(function (s) { var el = document.querySelector('#gearList select[data-slot="' + s + '"]'); if (el) el.value = gearSel[s] || ''; });
+  }
+  function dress() {
+    if (!GEARED || !current) return;
+    var r = RACES[sel.race], f = form();
+    var missing = WFGear.dress(current, gearIds(), { names: [f.name, r.name], material: rimMat });
+    WFGear.markers(current, showPts);
+    var m = current.userData.model;
+    if (m && missing.length && !warned[m]) { warned[m] = true; toast(f.name + ' model has no ' + missing.join(', ') + '.'); }
+  }
+  function buildGearMenu() {
+    var box = $('gearList');
+    if (!GEARED || !hasGL) { box.parentNode.hidden = true; return; }
+    WFGear.SLOTS.forEach(function (slot) {
+      var items = WFGear.itemsFor(slot);
+      if (!items.length) return;
+      var lab = document.createElement('label'); lab.className = 'cc-gslot';
+      lab.innerHTML = '<span>' + esc(WFGear.SLOT_NAMES[slot]) + '</span>';
+      var se = document.createElement('select'); se.setAttribute('data-slot', slot);
+      se.innerHTML = '<option value="">None</option>' + items.map(function (it) {
+        return '<option value="' + esc(it.id) + '">' + esc(it.name) + '</option>';
+      }).join('');
+      se.addEventListener('change', function () { gearSel[slot] = se.value || undefined; dress(); writeHash(); });
+      lab.appendChild(se); box.appendChild(lab);
+    });
+    $('outfitBtn').addEventListener('click', function () { setGear(WFGear.outfit(sel.cls)); dress(); writeHash(); });
+    $('clearGear').addEventListener('click', function () { setGear([]); dress(); writeHash(); });
+    $('showPts').addEventListener('change', function (e) { showPts = e.target.checked; if (current) WFGear.markers(current, showPts); });
   }
 
   /* Sub-races pop out beside the chosen race icon. */
@@ -694,7 +738,7 @@
   }
 
   function refresh(newFigure) {
-    var r = RACES[sel.race], f = form();
+    var r = RACES[sel.race], f = form(), prevCls = sel.cls;
     raceBtns.forEach(function (b, i) { b.setAttribute('aria-pressed', String(i === sel.race)); });
     document.body.setAttribute('data-faction', f.faction);
 
@@ -714,6 +758,7 @@
       classBtns[c.key].title = c.name + (ok ? '' : allowed ? ' (not available to ' + f.name + ')' : ' (classes TBD)');
     });
     if (allowed && allowed.length && allowed.indexOf(sel.cls) < 0) sel.cls = allowed[0];
+    if (sel.cls !== prevCls && GEARED) setGear(WFGear.outfit(sel.cls));   // a new class starts in its outfit
     Object.keys(classBtns).forEach(function (k) { classBtns[k].setAttribute('aria-pressed', String(allowed && k === sel.cls)); });
 
     var info = $('classInfo');
@@ -731,7 +776,7 @@
       $('ccLoading').hidden = true;
       setFigure(buildFigure(f.look, f.faction), f.faction);
       if (f.model) loadModel(f, loadToken);
-    }
+    } else dress();
     writeHash();
   }
 
@@ -740,6 +785,7 @@
     var r = RACES[sel.race], parts = ['race=' + r.id];
     if (r.forms.length > 1) parts.push('form=' + encodeURIComponent(form().name));
     if (sel.cls) parts.push('class=' + sel.cls);
+    if (GEARED) parts.push('gear=' + gearIds().map(encodeURIComponent).join(','));
     try { history.replaceState(null, '', '#' + parts.join('&')); } catch (e) {}
   }
   function readHash() {
@@ -751,6 +797,7 @@
       r.forms.forEach(function (f, j) { if (f.name === q.form) r.formIdx = j; });
     });
     if (q['class']) sel.cls = q['class'];
+    if (GEARED) setGear(q.gear != null ? q.gear.split(',') : WFGear.outfit(sel.cls));
   }
 
   function toast(msg) {
@@ -761,6 +808,7 @@
   /* ================================================================ start */
   buildRaceButtons();
   buildClassButtons();
+  buildGearMenu();
   readHash();
 
   if (hasGL) {
@@ -790,6 +838,7 @@
     r.formIdx = Math.floor(Math.random() * r.forms.length);
     var cl = r.forms[r.formIdx].classes;
     if (cl && cl.length) sel.cls = cl[Math.floor(Math.random() * cl.length)];
+    if (GEARED) setGear(WFGear.outfit(sel.cls));
     yaw = 0.35;
     flyOpen = false;
     pickRace(i);

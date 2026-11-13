@@ -182,19 +182,19 @@ window.PAGE = {
             ]
           },
           {
-            "title": "San'layn",
-            "tag": "Cloth",
+            "title": "Bloodsworn",
+            "tag": "Plate",
             "body": [
               {
                 "note": "Proposal"
               },
-              "The San'layn are elves remade by death into creatures of blood and shadow. They take the life of their enemies as Vitae and spend it on blood magic: to strike, to heal, or to become the night itself.",
+              "Bloodsworn are knights in plate who fight with blood in place of mana. Their weapon strikes draw Vitae from the enemy, and they spend it to heal, to shield themselves, or to cut deeper.",
               {
                 "table": [
                   ["", ""],
-                  ["Armor", "Cloth"],
-                  ["Resource", "Mana and Vitae"],
-                  ["Weapons", "Undecided"],
+                  ["Armor", "Plate"],
+                  ["Resource", "Vitae"],
+                  ["Weapons", "Swords, Axes, Maces, Polearms, Shields"],
                   ["Alliance", "auto"],
                   ["Horde", "auto"]
                 ]
@@ -203,11 +203,11 @@ window.PAGE = {
                 "h": "Specializations"
               },
               {
-                "list": ["Crimson Court (Ranged DPS)", "Bloodbinder (Healer)", "Nightfang (Melee DPS)"]
+                "list": ["Hemomancy (Healer)", "Sanguinar (Tank)", "Carnifex (Melee DPS)"]
               },
               {
-                "link": "Enter the San'layn simulation",
-                "page": "sanlayn"
+                "link": "Enter the Bloodsworn simulation",
+                "page": "bloodsworn"
               }
             ]
           }
@@ -324,7 +324,7 @@ window.PAGE = {
           "title": "Current WIP Matters",
           "tag": "Undecided",
           "body": [
-            "Names for Veil and Deceiver. Races for the Warden and the San'layn. The San'layn specializations still need work. The Necromancer's remaining questions are kept in its own log.",
+            "Names for Veil and Deceiver. Races for the Warden. The Necromancer's remaining questions are kept in its own log.",
             {
               "h": "Objectives"
             },

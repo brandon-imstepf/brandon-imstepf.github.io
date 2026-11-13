@@ -2382,19 +2382,20 @@ window.ICONS = {
     <path d="M20 10 L14 10 M20 10 L19 16" fill="none" stroke="#ffd100" stroke-width="2.5" stroke-linecap="round"/>
     <rect x="1.5" y="1.5" width="61" height="61" rx="5" fill="none" stroke="#ffd100" stroke-opacity=".6" stroke-width="1.5"/>
     </svg>`,
-  "rail-sanlayn": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  "rail-bloodsworn": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
     <defs>
-    <radialGradient id="rg-sanlayn" cx=".5" cy=".35" r=".8">
+    <radialGradient id="rg-bloodsworn" cx=".5" cy=".35" r=".8">
     <stop offset="0" stop-color="#e0485a" stop-opacity=".45"/>
     <stop offset="1" stop-color="#0b0a0c"/>
     </radialGradient>
     </defs>
     <rect fill="#0b0a0c"/>
-    <rect width="64" height="64" fill="url(#rg-sanlayn)"/>
-    <path d="M19 36 L4 24 L9 35 L3 41 L12 42 L17 48Z" fill="#e0485a" stroke="#000" stroke-width="1.5" stroke-linejoin="round"/>
-    <path d="M45 36 L60 24 L55 35 L61 41 L52 42 L47 48Z" fill="#e0485a" stroke="#000" stroke-width="1.5" stroke-linejoin="round"/>
-    <path d="M32 9 C40 23 46 30 46 39 A14 14 0 1 1 18 39 C18 30 24 23 32 9Z" fill="#e0485a" stroke="#000" stroke-width="1.5" stroke-linejoin="round"/>
-    <path d="M26 38 L28.5 46 L31 38Z M33 38 L35.5 46 L38 38Z" fill="#fff" stroke="#000" stroke-width=".8"/>
+    <rect width="64" height="64" fill="url(#rg-bloodsworn)"/>
+    <path d="M32 14 C41 27 47 34 47 43 A15 15 0 1 1 17 43 C17 34 23 27 32 14Z" fill="#e0485a" stroke="#000" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M32 5 L35.5 11 V44 L32 49 L28.5 44 V11Z" fill="#d7dbe2" stroke="#000" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M32 12 V44" stroke="#8a0a1a" stroke-width="1.4"/>
+    <path d="M20 10 H44 V14 H20Z" fill="#8a6a2c" stroke="#000" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M30 2.5 H34 V10 H30Z" fill="#4a3424" stroke="#000" stroke-width="1.2"/>
     <rect x="1.5" y="1.5" width="61" height="61" rx="5" fill="none" stroke="#e0485a" stroke-opacity=".6" stroke-width="1.5"/>
     </svg>`,
 

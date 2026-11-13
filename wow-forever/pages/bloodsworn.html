@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>San&#x27;layn · WoW Forever</title>
+<title>Bloodsworn · WoW Forever</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Metamorphous&display=swap">
@@ -73,17 +73,17 @@ h1 { font-family: var(--display); font-weight: 400; font-size: clamp(30px, 6vw, 
 <div class="ui">
   <section class="codex" aria-live="polite">
     <p class="eyebrow">WoW Forever · class concept</p>
-    <h1 id="spec-name">San&#x27;layn</h1>
-    <p class="role" id="spec-role">Cloth · Mana and Vitae</p>
+    <h1 id="spec-name">Bloodsworn</h1>
+    <p class="role" id="spec-role">Plate · Vitae</p>
     <p class="desc" id="spec-desc"></p>
     <ul class="abilities" id="spec-abilities"></ul>
   </section>
   <div class="bottom">
     <div class="specs" role="tablist" aria-label="Specializations">
       <button role="tab" id="tab-overview" data-spec="overview" aria-selected="true">Overview</button>
-      <button role="tab" id="tab-crimson" data-spec="crimson" aria-selected="false">Crimson Court</button>
-      <button role="tab" id="tab-bloodbinder" data-spec="bloodbinder" aria-selected="false">Bloodbinder</button>
-      <button role="tab" id="tab-nightfang" data-spec="nightfang" aria-selected="false">Nightfang</button>
+      <button role="tab" id="tab-hemomancy" data-spec="hemomancy" aria-selected="false">Hemomancy</button>
+      <button role="tab" id="tab-sanguinar" data-spec="sanguinar" aria-selected="false">Sanguinar</button>
+      <button role="tab" id="tab-carnifex" data-spec="carnifex" aria-selected="false">Carnifex</button>
     </div>
     <div class="bar" aria-label="Action bar">
       <div class="meter">
@@ -97,7 +97,7 @@ h1 { font-family: var(--display); font-weight: 400; font-size: clamp(30px, 6vw, 
       <button id="act-4" data-slot="3"><kbd>4</kbd><span class="nm"></span><small class="ct"></small><i class="cd"></i></button>
       <button id="act-5" data-slot="4"><kbd>5</kbd><span class="nm"></span><small class="ct"></small><i class="cd"></i></button>
     </div>
-    <p class="hint">Drag to orbit, scroll to zoom. The scene plays on its own; press 1 to 5 or tap a button to take over. Drain life to build Vitae, then spend it on blood magic.</p>
+    <p class="hint">Drag to orbit, scroll to zoom. The scene plays on its own; press 1 to 5 or tap a button to take over. Strike to build Vitae, then spend it on blood magic.</p>
   </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -409,82 +409,72 @@ function beam(getA, getB, dur, color, width) {
 }
 
 /* ================= CLASS ================= */
-/* ---------- SAN'LAYN: Mana and Vitae ---------- */
+/* ---------- BLOODSWORN: Vitae ---------- */
 const P = {};
-let vitae = 30, batForm = 0;
-const bats = [], pools = [], links = [], ambientBats = [];
-const pale = std('#d9d4e0', { roughness: 0.5 });
+let auraT = 0, wardHP = 0, wardT = 0;
+const pools = [], links = [];
+const steel = std('#3a3f48', { roughness: 0.35, metalness: 0.85 });
+const steelDark = std('#1f2228', { roughness: 0.4, metalness: 0.8 });
 const crimson = std('#7a1022', { roughness: 0.7, side: THREE.DoubleSide });
-const blackRobe = std('#14101a', { roughness: 0.85, side: THREE.DoubleSide });
-const silver = std('#b8b8c8', { roughness: 0.3, metalness: 0.8 });
-const blood = '#e0283c', bloodDark = '#8a0a1a';
-function addVitae(n) { vitae = Math.max(0, Math.min(100, vitae + n)); }
-function needVitae(n, user) {
-  if (vitae >= n) { vitae -= n; return true; }
-  if (!user) { vitae = 0; return true; }
-  toast('Not enough Vitae'); return false;
-}
-function wingShape(w, h) {
-  const s = new THREE.Shape();
-  s.moveTo(0, 0); s.lineTo(w, h * 0.3);
-  const n = 4;
-  for (let i = n; i >= 0; i--) { const x = w * i / n; s.quadraticCurveTo(x + w / n * 0.5, -h * 0.25, x, -h * (i === 0 ? 0.1 : 0.55)); }
-  s.lineTo(0, 0);
-  return new THREE.ShapeGeometry(s);
-}
-function makeBat(color, scale) {
-  const g = new THREE.Group();
-  const mat = std(color || '#1a1018', { side: THREE.DoubleSide, roughness: 0.8 });
-  g.add(new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 6), mat));
-  const eyes = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.015, 0.01), glowMat(blood, 2.5)); eyes.position.set(0, 0.02, 0.075); g.add(eyes);
-  const wings = [];
-  for (const sx of [-1, 1]) {
-    const w = new THREE.Mesh(wingShape(0.32, 0.18), mat); w.scale.x = sx; w.rotation.x = -Math.PI / 2; g.add(w); wings.push(w);
+const blood = '#e0283c', bloodDark = '#8a0a1a', mend = '#ff7a8a';
+function strikeTarget(user) {
+  const f = nearest(heroPos());
+  if (!f) { if (user) toast('No target'); return null; }
+  if (f.g.position.distanceTo(heroPos()) > 2) {         // close the gap
+    const dir = f.g.position.clone().sub(heroPos()).setY(0).normalize();
+    const dest = f.g.position.clone().sub(dir.multiplyScalar(1.3));
+    emit(chest(), 14, bloodDark, { speed: 1, life: 0.4 });
+    H.position.set(dest.x, 0.18, dest.z);
+    ring(dest, blood, 1.3, 0.4);
   }
-  g.scale.setScalar(scale || 1);
-  return { g: g, wings: wings };
+  faceTo(f.g.position);
+  return f;
+}
+function bleedOut(from, n) {
+  for (let k = 0; k < n; k++) later(k * 0.05, () => emit(from().lerp(chest(), k / n), 3, blood, { speed: 0.2, life: 0.4 }));
 }
 
 const C = {
   allies: 2, mote: '#6a1a2a', allyRegen: 0.003,
-  resource: { name: 'Mana', max: 100, start: 85, regen: 7, mode: 'spend' },
-  readoutLabel: 'Vitae',
+  resource: { name: 'Vitae', max: 100, start: 40, regen: -1, mode: 'spend' },
+  readoutLabel: 'Active',
   AB: {
-    bloodbolt: { name: 'Blood Bolt', cost: 8, cd: 1.2, line: '8 Mana' },
-    drain:     { name: 'Essence Drain', cost: 12, cd: 3, line: 'builds Vitae' },
-    shadows:   { name: 'Swarming Shadows', cost: 20, cd: 7, line: '20 Mana' },
-    tide:      { name: 'Crimson Tide', cost: 0, cd: 8, line: '50 Vitae' },
-    transfuse: { name: 'Transfusion', cost: 10, cd: 1.5, line: '15 Vitae' },
-    mirror:    { name: 'Blood Mirror', cost: 15, cd: 10, line: '15 Mana' },
-    rite:      { name: 'Crimson Rite', cost: 0, cd: 6, line: '40 Vitae' },
-    step:      { name: 'Shadowstep', cost: 8, cd: 3, line: '8 Mana' },
-    bite:      { name: 'Vampiric Bite', cost: 5, cd: 1.4, line: 'builds Vitae' },
-    swarm:     { name: 'Swarm of Bats', cost: 15, cd: 5, line: '15 Mana' },
-    batform:   { name: 'Bat Form', cost: 0, cd: 12, line: '40 Vitae' },
+    strike:    { name: 'Sanguine Strike', cost: 0, cd: 1.2, line: '+15 Vitae' },
+    letting:   { name: 'Bloodletting', cost: 0, cd: 5, line: '+10 Vitae' },
+    transfuse: { name: 'Transfusion', cost: 30, cd: 1.5, line: '30 Vitae' },
+    aura:      { name: 'Crimson Aura', cost: 0, cd: 10, line: 'Aura' },
+    bond:      { name: 'Blood Bond', cost: 20, cd: 10, line: '20 Vitae' },
+    well:      { name: 'Wellspring', cost: 60, cd: 12, line: '60 Vitae' },
+    rite:      { name: 'Last Rite', cost: 0, cd: 30, line: 'All Vitae' },
+    call:      { name: 'Blood Call', cost: 0, cd: 8, line: 'Taunt' },
+    ground:    { name: 'Crimson Ground', cost: 30, cd: 8, line: '30 Vitae' },
+    ward:      { name: 'Clotting Ward', cost: 40, cd: 10, line: '40 Vitae' },
+    harvest:   { name: 'Red Harvest', cost: 30, cd: 4, line: '30 Vitae' },
+    exsang:    { name: 'Exsanguinate', cost: 60, cd: 6, line: '60 Vitae' },
   },
   SPECS: {
-    overview: { name: "San'layn", role: 'Cloth · Mana and Vitae', color: '#e0485a',
-      desc: "The San'layn are elves remade by death into creatures of blood and shadow. They take the life of their enemies as Vitae and spend it on blood magic: to strike, to heal, or to become the night itself.",
-      abilities: [['Vitae', 'drawn from enemies by draining and biting.'], ['Blood Bolt', 'a bolt of hardened blood.'], ['Essence Drain', 'pulls life from a foe into you.'], ['Swarm of Bats', 'a cloud of bats that tears at everything nearby.']],
-      bar: ['bloodbolt', 'drain', 'swarm', 'transfuse', 'step'], cam: [7, 4.5, 9], target: [0, 1.4, 0] },
-    crimson: { name: 'Crimson Court', role: 'Ranged DPS', color: '#ff4060',
-      desc: 'Wields blood as a weapon from a distance. Shadows spread under the enemy and feed on it, and a full store of Vitae becomes a falling tide of blood.',
-      abilities: [['Blood Bolt', 'a bolt of hardened blood.'], ['Swarming Shadows', 'pools of shadow that spread beneath enemies.'], ['Crimson Tide', 'spend 50 Vitae to rain blood on every enemy nearby.']],
-      bar: ['bloodbolt', 'drain', 'shadows', 'tide', 'step'], cam: [-7.5, 4, 6.5], target: [0, 1.3, 0] },
-    bloodbinder: { name: 'Bloodbinder', role: 'Healer', color: '#ff7a8a',
-      desc: 'Takes life from the enemy and gives it to allies. A Bloodbinder never heals with its own blood when someone else’s will do.',
-      abilities: [['Transfusion', 'spend Vitae to heal an ally.'], ['Blood Mirror', 'binds an ally; harm done to the enemy heals them.'], ['Crimson Rite', 'spend 40 Vitae to heal the whole party.'], ['Essence Drain', 'the source of every heal.']],
-      bar: ['drain', 'transfuse', 'mirror', 'rite', 'bloodbolt'], cam: [6, 5.5, -8], target: [0, 1.3, 0] },
-    nightfang: { name: 'Nightfang', role: 'Melee DPS', color: '#c84aff',
-      desc: 'Fights up close in a cloud of bats. Steps from shadow to shadow, bites deep, and for a few seconds becomes a great bat that no blade can follow.',
-      abilities: [['Shadowstep', 'appear beside the enemy in a burst of bats.'], ['Vampiric Bite', 'heals you and builds Vitae.'], ['Bat Form', 'spend 40 Vitae to become a great bat for a few seconds.']],
-      bar: ['step', 'bite', 'swarm', 'batform', 'drain'], cam: [0, 6, 10], target: [0, 1.2, 0] },
+    overview: { name: 'Bloodsworn', role: 'Plate · Vitae', color: '#e0485a',
+      desc: 'Bloodsworn are knights in plate who fight with blood in place of mana. Their weapon strikes draw Vitae from the enemy, and they spend it to heal, to shield themselves, or to cut deeper.',
+      abilities: [['Vitae', 'drawn from enemies by weapon strikes; fades out of combat.'], ['Sanguine Strike', 'a weapon strike that builds Vitae.'], ['Bloodletting', 'opens a wound from range.'], ['Transfusion', 'spend Vitae to heal an ally.'], ['Crimson Aura', 'party members mend a little while it lasts.']],
+      bar: ['strike', 'letting', 'transfuse', 'aura', 'call'], cam: [7, 4.5, 9], target: [0, 1.4, 0] },
+    hemomancy: { name: 'Hemomancy', role: 'Healer', color: '#ff7a8a',
+      desc: 'The Hemomancer heals with blood taken from the enemy. It fights at the front, and every strike becomes a heal for someone behind it.',
+      abilities: [['Transfusion', 'spend 30 Vitae to heal an ally.'], ['Blood Bond', 'bind an ally; your strikes heal them.'], ['Wellspring', 'a pool of blood that heals allies standing in it.'], ['Last Rite', 'spend all Vitae to heal an ally completely.']],
+      bar: ['strike', 'transfuse', 'bond', 'well', 'rite'], cam: [6, 5.5, -8], target: [0, 1.3, 0] },
+    sanguinar: { name: 'Sanguinar', role: 'Tank', color: '#c0182e',
+      desc: 'The Sanguinar holds the line with shield and blood. Every blow it takes feeds its Vitae, and its Vitae hardens into a ward against the next.',
+      abilities: [['Blood Call', 'nearby enemies must attack you.'], ['Crimson Ground', 'blood soaks the ground around you and burns enemies in it.'], ['Clotting Ward', 'spend 40 Vitae on a ward that absorbs damage.'], ['Passive', 'blows taken build Vitae.']],
+      bar: ['strike', 'call', 'ground', 'ward', 'letting'], cam: [-7.5, 4, 6.5], target: [0, 1.3, 0] },
+    carnifex: { name: 'Carnifex', role: 'Melee DPS', color: '#ff4060',
+      desc: 'The Carnifex is an executioner with a two-handed blade. It opens wounds, lets them run, then drains what is left in one stroke.',
+      abilities: [['Bloodletting', 'a wound that bleeds over time.'], ['Red Harvest', 'spend 30 Vitae on a sweeping blow around you.'], ['Exsanguinate', 'spend 60 Vitae; strikes harder against a bleeding target and ends the bleed.']],
+      bar: ['strike', 'letting', 'harvest', 'exsang', 'aura'], cam: [0, 6, 10], target: [0, 1.2, 0] },
   },
   SCRIPTS: {
-    overview: { len: 14, steps: [[0.5, 'drain'], [2.2, 'bloodbolt'], [3.4, 'swarm'], [5, 'transfuse'], [6.4, 'step'], [7.6, 'bloodbolt'], [9, 'drain'], [10.8, 'transfuse'], [12.2, 'bloodbolt']] },
-    crimson: { len: 14, steps: [[0.5, 'shadows'], [1.6, 'bloodbolt'], [2.8, 'drain'], [4.4, 'bloodbolt'], [5.6, 'tide'], [7.6, 'bloodbolt'], [8.8, 'step'], [9.8, 'shadows'], [11, 'drain'], [12.6, 'bloodbolt']] },
-    bloodbinder: { len: 15, steps: [[0.5, 'drain'], [2.2, 'mirror'], [3.2, 'transfuse'], [4.6, 'bloodbolt'], [5.8, 'drain'], [7.6, 'rite'], [9, 'transfuse'], [10.4, 'bloodbolt'], [11.6, 'drain'], [13.4, 'transfuse']] },
-    nightfang: { len: 14, steps: [[0.4, 'step'], [1.2, 'bite'], [2.4, 'bite'], [3.4, 'swarm'], [4.6, 'bite'], [5.8, 'batform'], [9.6, 'step'], [10.4, 'bite'], [11.6, 'bite'], [12.6, 'drain']] },
+    overview:  { len: 14, steps: [[0.5, 'aura'], [1.4, 'strike'], [2.8, 'letting'], [4, 'strike'], [5.4, 'transfuse'], [6.8, 'call'], [8, 'strike'], [9.4, 'strike'], [10.8, 'transfuse'], [12.2, 'strike']] },
+    hemomancy: { len: 15, steps: [[0.5, 'bond'], [1.6, 'strike'], [3, 'transfuse'], [4.4, 'strike'], [5.8, 'well'], [7.4, 'strike'], [8.8, 'transfuse'], [10.2, 'strike'], [11.6, 'rite'], [13.2, 'strike']] },
+    sanguinar: { len: 14, steps: [[0.5, 'call'], [1.4, 'ground'], [2.6, 'strike'], [4, 'ward'], [5.4, 'strike'], [6.8, 'letting'], [8, 'strike'], [9.4, 'call'], [10.6, 'strike'], [12, 'strike']] },
+    carnifex:  { len: 14, steps: [[0.5, 'letting'], [1.6, 'strike'], [2.8, 'strike'], [4, 'exsang'], [5.6, 'aura'], [6.4, 'strike'], [7.8, 'harvest'], [9.4, 'letting'], [10.6, 'strike'], [12, 'exsang']] },
   },
 
   world() {
@@ -495,259 +485,259 @@ const C = {
     moonLight.color.set('#c0c8ff');
     const court = mesh(new THREE.CylinderGeometry(8.5, 8.8, 0.16, 48), std('#22202a', { roughness: 0.6, metalness: 0.2 }), 0, 0.08, 0); court.castShadow = false; scene.add(court);
     const inlay = new THREE.Mesh(new THREE.RingGeometry(3.4, 3.55, 48), std(bloodDark, { emissive: bloodDark, emissiveIntensity: 0.5 })); inlay.rotation.x = -Math.PI / 2; inlay.position.y = 0.17; scene.add(inlay);
-    // gothic arches in a ring
     const stoneG = std('#2e2c38', { roughness: 0.9 });
     for (let i = 0; i < 8; i++) {
       const a = i / 8 * Math.PI * 2 + 0.2, r = 10.5;
       const g = new THREE.Group();
       g.add(mesh(new THREE.BoxGeometry(0.5, 4.5, 0.5), stoneG, -1.2, 2.25, 0));
       g.add(mesh(new THREE.BoxGeometry(0.5, 4.5, 0.5), stoneG, 1.2, 2.25, 0));
-      const arch = mesh(new THREE.TorusGeometry(1.2, 0.22, 8, 16, Math.PI), stoneG, 0, 4.5, 0); g.add(arch);
+      g.add(mesh(new THREE.TorusGeometry(1.2, 0.22, 8, 16, Math.PI), stoneG, 0, 4.5, 0));
       g.add(mesh(new THREE.ConeGeometry(0.25, 1.2, 4), stoneG, 0, 6.1, 0));
       const lantern = new THREE.Mesh(new THREE.OctahedronGeometry(0.18), glowMat(blood, 1.8)); lantern.position.set(0, 3.6, 0); g.add(lantern);
       g.position.set(Math.cos(a) * r, 0, Math.sin(a) * r); g.lookAt(0, 0, 0); scene.add(g);
       if (i % 2 === 0) { const l = new THREE.PointLight(blood, 1, 8, 2); l.position.set(Math.cos(a) * (r - 0.5), 3.6, Math.sin(a) * (r - 0.5)); scene.add(l); }
     }
-    // iron spires beyond
     for (let i = 0; i < 18; i++) {
       const a = rand() * Math.PI * 2, r = 15 + rand() * 10, h = 6 + rand() * 9;
       const s = mesh(new THREE.ConeGeometry(0.6 + rand() * 0.6, h, 6), std('#101018', { roughness: 1 }), Math.cos(a) * r, h / 2, Math.sin(a) * r); s.castShadow = false; scene.add(s);
     }
-    // a blood fountain off to one side
     const fx = 6, fz = -4.5;
     scene.add(mesh(new THREE.CylinderGeometry(1, 1.1, 0.5, 20), stoneG, fx, 0.25, fz));
     const pool = new THREE.Mesh(new THREE.CircleGeometry(0.9, 20), std(bloodDark, { emissive: bloodDark, emissiveIntensity: 0.6, roughness: 0.1 })); pool.rotation.x = -Math.PI / 2; pool.position.set(fx, 0.51, fz); scene.add(pool);
     scene.add(mesh(new THREE.CylinderGeometry(0.15, 0.2, 1.4, 8), stoneG, fx, 1.1, fz));
     fountainTop.set(fx, 1.9, fz);
-    // bats circling overhead
-    for (let i = 0; i < 10; i++) { const b = makeBat('#120c12', 1.2); b.g.userData = { a: rand() * 6, r: 6 + rand() * 6, h: 6 + rand() * 4, s: 0.3 + rand() * 0.4 }; scene.add(b.g); ambientBats.push(b); }
   },
 
   build() {
-    // long robe, crimson underskirt
-    H.add(mesh(new THREE.ConeGeometry(0.5, 1.5, 14, 1, true), blackRobe, 0, 0.8, 0));
-    H.add(mesh(new THREE.ConeGeometry(0.44, 1.3, 14, 1, true), crimson, 0, 0.72, 0.03));
-    H.add(mesh(new THREE.CylinderGeometry(0.2, 0.28, 0.6, 12), blackRobe, 0, 1.72, 0));
-    H.add(mesh(new THREE.BoxGeometry(0.06, 0.55, 0.02), std('#b8b8c8', { metalness: 0.8, roughness: 0.3 }), 0, 1.7, 0.21));
-    const sash = mesh(new THREE.TorusGeometry(0.26, 0.04, 6, 18), crimson, 0, 1.45, 0); sash.rotation.x = Math.PI / 2; H.add(sash);
-    // a tall collar flaring behind the head
-    const collar = mesh(new THREE.CylinderGeometry(0.42, 0.16, 0.55, 14, 1, true, Math.PI * 0.6, Math.PI * 0.8), crimson, 0, 2.15, -0.02);
-    collar.rotation.y = Math.PI; H.add(collar);
-    for (const sx of [-1, 1]) { const spike = mesh(new THREE.ConeGeometry(0.04, 0.3, 4), silver, sx * 0.3, 2.45, -0.2); spike.rotation.z = -sx * 0.3; H.add(spike); }
-    // head: pale, long ears, swept-back hair, red eyes
-    const head = new THREE.Group(); head.position.set(0, 2.15, 0.02); H.add(head); P.head = head;
-    head.add(mesh(new THREE.SphereGeometry(0.17, 14, 12), pale, 0, 0, 0));
+    // legs in plate
     for (const sx of [-1, 1]) {
-      const ear = mesh(new THREE.ConeGeometry(0.035, 0.36, 5), pale, sx * 0.21, 0.06, -0.04); ear.rotation.z = -sx * 1.15; ear.rotation.x = -0.3; head.add(ear);
-      const eye = new THREE.Mesh(new THREE.SphereGeometry(0.022, 6, 6), glowMat(blood, 3)); eye.position.set(sx * 0.06, 0.02, 0.155); head.add(eye);
+      H.add(mesh(new THREE.CylinderGeometry(0.12, 0.1, 0.9, 10), steel, sx * 0.16, 0.5, 0));
+      H.add(mesh(new THREE.SphereGeometry(0.11, 10, 8), steelDark, sx * 0.16, 0.55, 0.05));
+      H.add(mesh(new THREE.BoxGeometry(0.18, 0.1, 0.32), steelDark, sx * 0.16, 0.05, 0.06));
     }
-    const hair = mesh(new THREE.SphereGeometry(0.19, 14, 10, 0, Math.PI * 2, 0, Math.PI * 0.55), std('#c8c0d8', { roughness: 0.6 }), 0, 0.03, -0.03); head.add(hair);
-    const tail = mesh(new THREE.ConeGeometry(0.1, 0.7, 8), std('#c8c0d8', { roughness: 0.6 }), 0, -0.25, -0.2); tail.rotation.x = 0.35; head.add(tail);
-    head.add(mesh(new THREE.TorusGeometry(0.18, 0.012, 4, 20), M.trim, 0, 0.1, 0).rotateX(Math.PI / 2 - 0.2));
-    // arms with clawed hands
+    // skirt, body, tabard
+    H.add(mesh(new THREE.ConeGeometry(0.42, 0.65, 14, 1, true), crimson, 0, 0.95, 0));
+    H.add(mesh(new THREE.CylinderGeometry(0.34, 0.28, 0.8, 14), steel, 0, 1.55, 0));
+    const chestPl = mesh(new THREE.SphereGeometry(0.36, 16, 12), steel, 0, 1.72, 0.04); chestPl.scale.set(1, 0.75, 0.8); H.add(chestPl);
+    H.add(mesh(new THREE.TorusGeometry(0.31, 0.035, 6, 20), M.trim, 0, 1.2, 0).rotateX(Math.PI / 2));
+    H.add(mesh(new THREE.BoxGeometry(0.34, 0.95, 0.03), crimson, 0, 1.05, 0.3));
+    const sigil = mesh(new THREE.SphereGeometry(0.07, 10, 8), glowMat(blood, 2.4), 0, 1.68, 0.33); sigil.scale.set(0.8, 1.2, 0.4); H.add(sigil);
+    // cape
+    P.cape = new THREE.Group(); P.cape.position.set(0, 1.98, -0.28); H.add(P.cape);
+    P.cape.add(mesh(new THREE.BoxGeometry(0.75, 1.7, 0.03), crimson, 0, -0.85, 0));
+    // pauldrons
     for (const sx of [-1, 1]) {
-      const arm = new THREE.Group(); arm.position.set(sx * 0.3, 1.95, 0);
-      arm.add(mesh(new THREE.ConeGeometry(0.11, 0.7, 8, 1, true), blackRobe, 0, -0.35, 0));
-      arm.add(mesh(new THREE.SphereGeometry(0.05, 8, 6), pale, 0, -0.72, 0));
-      for (let k = -1; k <= 1; k++) { const c = mesh(new THREE.ConeGeometry(0.01, 0.1, 4), pale, k * 0.025, -0.8, 0.02); c.rotation.x = Math.PI; arm.add(c); }
-      H.add(arm); P[sx < 0 ? 'lArm' : 'rArm'] = arm;
+      const p = mesh(new THREE.SphereGeometry(0.2, 14, 10, 0, Math.PI * 2, 0, Math.PI / 2), steelDark, sx * 0.42, 1.98, 0); p.scale.set(1.1, 0.8, 1); p.rotation.z = -sx * 0.4; H.add(p);
+      const sp = mesh(new THREE.ConeGeometry(0.04, 0.22, 5), M.trim, sx * 0.5, 2.12, 0); sp.rotation.z = -sx * 0.5; H.add(sp);
     }
-    P.orb = new THREE.Mesh(new THREE.SphereGeometry(0.1, 12, 10), glowMat(blood, 2.4)); P.orb.position.set(0, -0.86, 0.1); P.rArm.add(P.orb);
-    // bat-wing cape
-    P.wings = [];
+    // helm with a red visor slit and a plume
+    const head = new THREE.Group(); head.position.set(0, 2.24, 0.02); H.add(head); P.head = head;
+    head.add(mesh(new THREE.SphereGeometry(0.2, 16, 12), steel, 0, 0, 0));
+    head.add(mesh(new THREE.BoxGeometry(0.22, 0.03, 0.04), glowMat(blood, 3), 0, 0.01, 0.185));
+    head.add(mesh(new THREE.BoxGeometry(0.03, 0.22, 0.05), steelDark, 0, -0.05, 0.19));
+    const plume = mesh(new THREE.ConeGeometry(0.06, 0.55, 8), crimson, 0, 0.18, -0.2); plume.rotation.x = -1.9; head.add(plume);
+    // arms: the weapon is in the right hand (the hero faces +z, so its right is -x)
     for (const sx of [-1, 1]) {
-      const w = new THREE.Group(); w.position.set(sx * 0.15, 1.95, -0.2);
-      const m = new THREE.Mesh(wingShape(1.05, 1.1), crimson); m.scale.x = sx; m.rotation.z = -Math.PI / 2 * 0.9 * sx; w.add(m);
-      H.add(w); P.wings.push(w);
+      const arm = new THREE.Group(); arm.position.set(sx * 0.42, 1.92, 0);
+      arm.add(mesh(new THREE.CylinderGeometry(0.1, 0.085, 0.7, 10), steel, 0, -0.35, 0));
+      arm.add(mesh(new THREE.SphereGeometry(0.09, 10, 8), steelDark, 0, -0.74, 0.02));
+      H.add(arm); P[sx < 0 ? 'rArm' : 'lArm'] = arm;
     }
-    // the great bat used by Bat Form (hidden until needed)
-    const gb = makeBat('#2a0e1c', 6); gb.g.visible = false; H.add(gb.g); P.great = gb;
+    // blade, held forward from the right hand
+    P.sword = new THREE.Group(); P.sword.position.set(0, -0.76, 0.05); P.rArm.add(P.sword);
+    P.sword.add(mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.3, 6), M.leather, 0, 0, 0).rotateX(Math.PI / 2));
+    P.sword.add(mesh(new THREE.BoxGeometry(0.34, 0.05, 0.06), steelDark, 0, 0, 0.16));
+    P.sword.add(mesh(new THREE.BoxGeometry(0.09, 0.02, 1.2), M.blade, 0, 0, 0.78));
+    P.sword.add(mesh(new THREE.BoxGeometry(0.02, 0.025, 1.1), glowMat(blood, 2.2), 0, 0, 0.76));
+    // shield on the left arm (Sanguinar)
+    P.shield = new THREE.Group(); P.shield.position.set(0.1, -0.5, 0.08); P.lArm.add(P.shield);
+    const face = mesh(new THREE.CylinderGeometry(0.36, 0.36, 0.05, 6), crimson, 0, 0, 0); face.rotation.z = Math.PI / 2; P.shield.add(face);
+    const rim = mesh(new THREE.TorusGeometry(0.35, 0.03, 6, 6), steelDark, 0.03, 0, 0); rim.rotation.y = Math.PI / 2; P.shield.add(rim);
+    P.shield.add(mesh(new THREE.SphereGeometry(0.07, 10, 8), glowMat(blood, 2), 0.05, 0, 0));
+    P.shield.visible = false;
+    // Crimson Aura ring and Clotting Ward shell, hidden until used
+    P.aura = new THREE.Mesh(new THREE.RingGeometry(1.3, 1.45, 48), addMat(blood, 0.7)); P.aura.rotation.x = -Math.PI / 2; P.aura.position.y = 0.05; P.aura.visible = false; H.add(P.aura);
+    P.ward = new THREE.Mesh(new THREE.SphereGeometry(1.25, 24, 16), addMat(blood, 0.18)); P.ward.position.y = 1.2; P.ward.visible = false; H.add(P.ward);
+  },
+
+  onSpec(name) {
+    P.shield.visible = name === 'sanguinar';
+    P.sword.scale.setScalar(name === 'carnifex' ? 1.35 : 1);
   },
 
   readout() {
-    if (spec === 'bloodbinder') return Math.round(vitae) + (links.length ? ' · Mirror bound' : '');
-    if (spec === 'nightfang' && batForm > 0) return Math.round(vitae) + ' · Bat Form';
-    return String(Math.round(vitae));
+    const on = [];
+    if (auraT > 0) on.push('Aura');
+    if (links.length) on.push('Bond');
+    if (wardHP > 0) on.push('Ward ' + Math.round(wardHP * 100) + '%');
+    const bleeding = alive().filter(f => f.dot > 0).length;
+    if (bleeding) on.push(bleeding + ' bleeding');
+    return on.join(' · ') || '—';
   },
   onHit(f, dmg) {
-    for (const l of links) if (Math.random() < 0.5) heal(l.a, 0.02 * dmg, '#ff7a8a');
+    for (const l of links) if (Math.random() < 0.5) heal(l.a, 0.02 * dmg, mend);
+  },
+  onHeroHit() {
+    if (spec === 'sanguinar') gain(4);                      // blows taken feed Vitae
+    if (wardHP > 0) { wardHP = Math.max(0, wardHP - 0.2); emit(chest(), 10, blood, { speed: 1.2, life: 0.4 }); if (wardHP <= 0) P.ward.visible = false; }
   },
 
   act: {
-    bloodbolt(user) {
+    strike(user) {
+      const f = strikeTarget(user);
+      if (!f) return false;
+      swingAnim('slash');
+      later(0.15, () => {
+        hit(f, spec === 'carnifex' ? 1.4 : 1.1, blood); gain(15);
+        emit(foeChest(f), 22, bloodDark, { speed: 2, gravity: 5, life: 0.6 });
+        bleedOut(() => foeChest(f), 5);
+      });
+      return true;
+    },
+    letting(user) {
       const f = nearest(heroPos());
       if (!f) { if (user) toast('No target'); return false; }
       faceTo(f.g.position); swingAnim('cast');
-      const geo = new THREE.ConeGeometry(0.08, 0.4, 6); geo.rotateX(Math.PI / 2);
-      bolt(chest().add(V(0, 0.4, 0)), () => foeChest(f), blood, 0.08, 0.4, () => { hit(f, 1, blood); emit(foeChest(f), 20, bloodDark, { speed: 2, gravity: 6, life: 0.6 }); }, { geo: geo, mat: glowMat(blood, 2.2), trail: 4 });
+      const geo = new THREE.TorusGeometry(0.25, 0.04, 6, 16, Math.PI); geo.rotateX(Math.PI / 2);
+      bolt(chest().add(V(0, 0.2, 0)), () => foeChest(f), blood, 0.1, 0.35, () => {
+        hit(f, 0.6, blood); gain(10);
+        f.dot = 6; f.dotColor = blood;
+        emit(foeChest(f), 18, bloodDark, { speed: 2, gravity: 6, life: 0.6 });
+      }, { geo: geo, mat: glowMat(blood, 2.4), trail: 4, spin: true });
       return true;
     },
-    drain(user) {
-      const f = nearest(heroPos());
-      if (!f) { if (user) toast('No target'); return false; }
-      faceTo(f.g.position); swingAnim('drain');
-      beam(() => foeChest(f), () => chest().add(V(0, 0.3, 0)), 1.4, blood, 0.05);
-      timed(1.4, (e, p) => {
-        if (Math.random() < 0.6) { const pt = foeChest(f).lerp(chest(), Math.random()); emit(pt, 1, blood, { speed: 0.2, life: 0.5 }); }
-      });
-      for (let k = 0; k < 4; k++) later(0.3 * (k + 1), () => { hit(f, 0.4, blood, true); addVitae(7); });
-      return true;
-    },
-    shadows() {
-      swingAnim('raise');
-      for (const f of alive().slice(0, 4)) {
-        const pool = new THREE.Mesh(new THREE.CircleGeometry(1, 24), new THREE.MeshBasicMaterial({ color: '#1a0410', transparent: true, opacity: 0.85, depthWrite: false }));
-        pool.rotation.x = -Math.PI / 2; pool.position.copy(f.g.position).setY(0.2); scene.add(pool);
-        const rim = new THREE.Mesh(new THREE.RingGeometry(0.95, 1.05, 32), addMat(blood, 0.8)); rim.rotation.x = -Math.PI / 2; rim.position.copy(pool.position).setY(0.21); scene.add(rim);
-        pools.push({ m: pool, rim: rim, life: 6, tick: 0, r: 0.4 });
-      }
-      return true;
-    },
-    tide(user) {
-      if (!needVitae(50, user)) return false;
-      swingAnim('raise');
-      popText(chest().add(V(0, 1.6, 0)), 'Crimson Tide', blood, 1.1);
-      const center = heroPos();
-      timed(2.2, (e, p) => {
-        for (let k = 0; k < 6; k++) {
-          const a = Math.random() * Math.PI * 2, r = Math.random() * 6;
-          emit(center.clone().add(V(Math.cos(a) * r, 6, Math.sin(a) * r)), 1, blood, { speed: 0, gravity: 14, life: 0.8, spread: 0.1 });
-        }
-      });
-      for (let k = 0; k < 4; k++) later(0.5 * k + 0.4, () => { hitArea(center, 6, 0.8, blood); ring(center, blood, 6, 0.5, 0.04); });
-      shakeCam(0.25);
-      return true;
-    },
-    transfuse(user) {
+    transfuse() {
       const a = lowestAlly();
-      if (!a || !needVitae(15, user)) return false;
+      if (!a) return false;
       faceTo(a.g.position); swingAnim('cast');
       beam(() => chest().add(V(0, 0.3, 0)), () => allyChest(a), 1, blood, 0.05);
-      later(0.4, () => heal(a, 0.3, '#ff7a8a'));
+      later(0.4, () => heal(a, 0.3, mend));
       return true;
     },
-    mirror() {
+    aura() {
+      auraT = 12; P.aura.visible = true;
+      swingAnim('raise');
+      ring(heroPos(), blood, 4, 0.8, 0.06);
+      popText(chest().add(V(0, 1.6, 0)), 'Crimson Aura', mend, 0.9);
+      return true;
+    },
+    bond() {
       const a = lowestAlly();
       if (!a) return false;
       swingAnim('cast');
       for (const l of links) l.life = 0;
       const m = new THREE.Mesh(new THREE.TorusGeometry(0.55, 0.03, 6, 24), glowMat(blood, 2)); m.rotation.x = Math.PI / 2; scene.add(m);
-      links.push({ a: a, m: m, life: 10 });
-      popText(allyChest(a).add(V(0, 1.2, 0)), 'Blood Mirror', '#ff7a8a', 0.8);
+      links.push({ a: a, m: m, life: 12 });
+      popText(allyChest(a).add(V(0, 1.2, 0)), 'Blood Bond', mend, 0.8);
+      return true;
+    },
+    well() {
+      swingAnim('raise');
+      const c = allies.reduce((s, a) => s.add(a.g.position), heroPos()).multiplyScalar(1 / (allies.length + 1)).setY(0.2);
+      pools.push(makePool(c, 2.6, 7, 'heal'));
+      popText(c.clone().add(V(0, 2.2, 0)), 'Wellspring', mend, 1);
       return true;
     },
     rite(user) {
-      if (!needVitae(40, user)) return false;
+      if (user && res < 40) { toast('Not enough Vitae'); return false; }
+      const a = lowestAlly();
+      if (!a) return false;
+      res = 0;
+      faceTo(a.g.position); swingAnim('raise');
+      const col = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.7, 6, 20, 1, true), addMat(blood, 0.5)); col.position.copy(a.g.position).setY(3); scene.add(col);
+      timed(1.2, (e, p) => { col.material.opacity = 0.5 * (1 - p); col.scale.set(1 - p * 0.5, 1, 1 - p * 0.5); }, () => scene.remove(col));
+      heal(a, 1, mend);
+      popText(allyChest(a).add(V(0, 1.4, 0)), 'Last Rite', mend, 1.1);
+      return true;
+    },
+    call() {
       swingAnim('raise');
-      ring(heroPos(), blood, 6, 1, 0.05);
-      const col = new THREE.Mesh(new THREE.CylinderGeometry(4, 4, 0.1, 32), addMat(blood, 0.25)); col.position.copy(heroPos()).setY(0.25); scene.add(col);
-      timed(1, (e, p) => { col.material.opacity = 0.25 * (1 - p); }, () => scene.remove(col));
-      for (const a of allies) { heal(a, 0.35, '#ff7a8a'); beam(() => chest(), () => allyChest(a), 0.6, blood, 0.03); }
-      popText(chest().add(V(0, 1.6, 0)), 'Crimson Rite', '#ff7a8a', 1);
-      return true;
-    },
-    step(user) {
-      const f = nearest(heroPos());
-      if (!f) { if (user) toast('No target'); return false; }
-      const from = heroPos();
-      const dir = f.g.position.clone().sub(from).setY(0).normalize();
-      const dest = f.g.position.clone().sub(dir.multiplyScalar(1.2));
-      burstBats(from.clone().setY(1.2), 8);
-      H.position.set(dest.x, 0.18, dest.z); faceTo(f.g.position);
-      burstBats(dest.clone().setY(1.2), 8);
-      ring(dest, specColor, 1.4, 0.4);
-      return true;
-    },
-    bite(user) {
-      const f = nearest(heroPos());
-      if (!f) { if (user) toast('No target'); return false; }
-      if (f.g.position.distanceTo(heroPos()) > 2) C.act.step(false);
-      faceTo(f.g.position); swingAnim('bite');
-      later(0.15, () => {
-        hit(f, 1.2, blood); addVitae(10);
-        emit(foeChest(f), 25, bloodDark, { speed: 2, gravity: 5, life: 0.6 });
-        for (let k = 0; k < 6; k++) later(k * 0.05, () => emit(foeChest(f).lerp(chest(), k / 6), 3, blood, { speed: 0.2, life: 0.4 }));
-      });
-      return true;
-    },
-    swarm() {
-      swingAnim('raise');
-      for (let i = 0; i < 14; i++) {
-        const b = makeBat('#1a0c16', 1.3);
-        b.g.position.copy(chest()); scene.add(b.g);
-        bats.push({ b: b, life: 4 + Math.random(), a: i / 14 * Math.PI * 2, tgt: null, cd: Math.random() * 0.5 });
+      for (const f of alive()) if (f.g.position.distanceTo(heroPos()) < 9) {
+        f.taunt = 6;
+        beam(() => foeChest(f), () => chest(), 0.5, blood, 0.03);
       }
+      ring(heroPos(), blood, 8, 0.8, 0.05);
+      popText(chest().add(V(0, 1.6, 0)), 'Blood Call', blood, 0.9);
       return true;
     },
-    batform(user) {
-      if (batForm > 0) { if (user) toast('Already a bat'); return false; }
-      if (!needVitae(40, user)) return false;
-      batForm = 4;
-      burstBats(chest(), 16);
-      popText(chest().add(V(0, 1.8, 0)), 'Bat Form', '#c84aff', 1);
+    ground() {
+      swingAnim('raise');
+      pools.push(makePool(heroPos().setY(0.2), 2.4, 7, 'harm'));
+      return true;
+    },
+    ward() {
+      wardHP = 1; wardT = 8; P.ward.visible = true;
+      swingAnim('raise');
+      emit(chest(), 30, blood, { speed: 1.4, life: 0.6, spread: 0.6 });
+      popText(chest().add(V(0, 1.6, 0)), 'Clotting Ward', blood, 0.9);
+      return true;
+    },
+    harvest() {
+      swingAnim('spin');
+      for (const d of [0.15, 0.4]) later(d, () => { hitArea(heroPos(), 2.8, 0.8, blood); ring(heroPos(), blood, 2.8, 0.4, 0.08); emit(chest(), 20, bloodDark, { speed: 3, life: 0.5 }); });
+      return true;
+    },
+    exsang(user) {
+      const f = strikeTarget(user);
+      if (!f) return false;
+      swingAnim('thrust');
+      later(0.2, () => {
+        const bleeding = f.dot > 0;
+        hit(f, bleeding ? 3.2 : 1.8, blood); f.dot = 0;
+        popText(foeChest(f).add(V(0, 1, 0)), 'Exsanguinate', blood, 1);
+        emit(foeChest(f), 40, bloodDark, { speed: 3, gravity: 6, life: 0.7 });
+        bleedOut(() => foeChest(f), 10);
+        shakeCam(0.2);
+      });
       return true;
     },
   },
 
   animate(dt, t, s, kind) {
-    const inBat = batForm > 0;
-    H.children.forEach(c => { if (c !== P.great.g) c.visible = !inBat; });
-    P.great.g.visible = inBat;
-    if (inBat) {
-      P.great.g.position.set(0, 2.4 + Math.sin(t * 6) * 0.2, 0);
-      P.great.wings.forEach((w, k) => { w.rotation.y = (k ? -1 : 1) * Math.sin(t * 12) * 0.7; });
-      return;
+    P.head.rotation.y = Math.sin(t * 0.8) * 0.12;
+    P.cape.rotation.x = 0.12 + Math.sin(t * 1.3) * 0.04;
+    if (kind === 'slash' && s > 0) { P.rArm.rotation.x = -0.4 - 2.0 * s; P.rArm.rotation.z = 0.5 * s; }
+    else if (kind === 'thrust' && s > 0) { P.rArm.rotation.x = -1.5 * s; P.rArm.rotation.z = 0; P.lArm.rotation.x = -1.4 * s; }
+    else if (kind === 'cast' && s > 0) { P.lArm.rotation.x = -1.6 * s; }
+    else if (kind === 'raise' && s > 0) { P.rArm.rotation.x = -2.6 * s; P.lArm.rotation.x = -2.6 * s; }
+    else if (kind === 'spin' && s > 0) { P.rArm.rotation.z = -1.3 * s; P.rArm.rotation.x = -1.4 * s; H.rotation.y += dt * 16; }
+    else {
+      P.rArm.rotation.x += (-0.35 - P.rArm.rotation.x) * dt * 6; P.rArm.rotation.z *= 0.9;
+      P.lArm.rotation.x += (-0.15 - P.lArm.rotation.x) * dt * 6;
     }
-    P.head.rotation.y = Math.sin(t * 0.8) * 0.15;
-    P.wings.forEach((w, k) => { w.rotation.y = (k ? -1 : 1) * (0.4 + Math.sin(t * 1.4) * 0.12); });
-    P.orb.scale.setScalar(1 + Math.sin(t * 5) * 0.15);
-    if (kind === 'cast' && s > 0) { P.rArm.rotation.x = -1.7 * s; }
-    else if (kind === 'drain' && s > 0) { P.rArm.rotation.x = -1.5; P.lArm.rotation.x = -1.2; }
-    else if (kind === 'raise' && s > 0) { P.rArm.rotation.x = -2.6 * s; P.lArm.rotation.x = -2.6 * s; P.wings.forEach((w, k) => { w.rotation.y = (k ? -1 : 1) * (0.4 + 0.9 * s); }); }
-    else if (kind === 'bite' && s > 0) { P.head.rotation.x = 0.6 * s; P.rArm.rotation.x = -1.2 * s; P.lArm.rotation.x = -1.2 * s; }
-    else { P.rArm.rotation.x += (-0.3 - P.rArm.rotation.x) * dt * 6; P.lArm.rotation.x += (-0.2 - P.lArm.rotation.x) * dt * 6; P.head.rotation.x *= 0.9; }
   },
 
   onFrame(dt, t) {
-    // ambient bats and the fountain
-    ambientBats.forEach((b, i) => { const u = b.g.userData; u.a += dt * u.s; b.g.position.set(Math.cos(u.a) * u.r, u.h + Math.sin(t * 2 + i) * 0.5, Math.sin(u.a) * u.r); b.g.rotation.y = -u.a; b.wings.forEach((w, k) => { w.rotation.y = (k ? -1 : 1) * Math.sin(t * 14 + i) * 0.8; }); });
     if (Math.random() < dt * 14) emit(fountainTop, 1, blood, { speed: 0.6, up: 2, gravity: 6, life: 0.7, spread: 0.1 });
-    // Bat Form: the great bat sweeps across enemies
-    if (batForm > 0) {
-      batForm -= dt;
-      const f = nearest(heroPos());
-      if (f) {
-        const d = f.g.position.clone().sub(heroPos()).setY(0);
-        if (d.length() > 0.8) H.position.addScaledVector(d.normalize(), dt * 6);
-        faceTo(f.g.position);
-        if (Math.random() < dt * 3) { hit(f, 0.8, '#c84aff'); addVitae(3); emit(foeChest(f), 15, bloodDark, { speed: 2, gravity: 5, life: 0.5 }); }
-      }
-      if (Math.random() < dt * 20) emit(heroPos().add(V(0, 2.4, 0)), 1, '#c84aff', { speed: 0.3, life: 0.5, spread: 1.2 });
-      if (batForm <= 0) burstBats(heroPos().add(V(0, 2, 0)), 12);
+    // Crimson Aura: allies mend while it lasts
+    if (auraT > 0) {
+      auraT -= dt;
+      P.aura.material.opacity = 0.7 * Math.min(1, auraT) * (0.7 + Math.sin(t * 4) * 0.3);
+      P.aura.rotation.z += dt;
+      if (Math.random() < dt * 0.8) { const a = lowestAlly(); if (a) heal(a, 0.04, mend); }
+      if (auraT <= 0) P.aura.visible = false;
     }
-    // swarming bats
-    for (let i = bats.length - 1; i >= 0; i--) {
-      const s = bats[i];
-      s.life -= dt; s.cd -= dt; s.a += dt * 4;
-      if (!s.tgt || s.tgt.state !== 'roam') s.tgt = pickFoe(i);
-      const goal = s.tgt ? foeChest(s.tgt).add(V(Math.cos(s.a) * 0.8, 0.4 + Math.sin(s.a * 2) * 0.3, Math.sin(s.a) * 0.8)) : chest().add(V(Math.cos(s.a) * 1.4, 0.8, Math.sin(s.a) * 1.4));
-      s.b.g.position.lerp(goal, Math.min(1, dt * 5));
-      s.b.g.lookAt(goal);
-      s.b.wings.forEach((w, k) => { w.rotation.y = (k ? -1 : 1) * Math.sin(t * 20 + i) * 0.8; });
-      if (s.tgt && s.cd <= 0) { s.cd = 0.8; hit(s.tgt, 0.25, blood, true); addVitae(1); emit(s.b.g.position, 3, bloodDark, { speed: 1, life: 0.3 }); }
-      if (s.life <= 0) { emit(s.b.g.position, 6, '#2a0e1c', { speed: 1, life: 0.4 }); scene.remove(s.b.g); bats.splice(i, 1); }
+    // Clotting Ward
+    if (wardT > 0) {
+      wardT -= dt;
+      P.ward.material.opacity = 0.12 + wardHP * 0.12 + Math.sin(t * 5) * 0.03;
+      if (wardT <= 0) { wardHP = 0; P.ward.visible = false; }
     }
-    // swarming shadows spread and feed
+    // pools: Crimson Ground burns enemies, Wellspring heals allies
     for (let i = pools.length - 1; i >= 0; i--) {
       const p = pools[i];
-      p.life -= dt; p.r = Math.min(1.8, p.r + dt * 0.5); p.tick -= dt;
-      p.m.scale.setScalar(p.r); p.rim.scale.setScalar(p.r);
-      p.m.material.opacity = 0.85 * Math.min(1, p.life); p.rim.material.opacity = 0.8 * Math.min(1, p.life) * (0.6 + Math.sin(t * 6) * 0.4);
-      if (Math.random() < dt * 10) emit(p.m.position.clone().add(V((Math.random() - 0.5) * p.r * 1.6, 0.1, (Math.random() - 0.5) * p.r * 1.6)), 1, '#5a0a2a', { speed: 0.1, lift: 0.8, life: 0.8 });
-      if (p.tick <= 0) { p.tick = 0.7; for (const f of alive()) if (f.g.position.distanceTo(p.m.position) < p.r) { hit(f, 0.35, blood, true); addVitae(2); f.slow = 1; } }
-      if (p.life <= 0) { scene.remove(p.m); scene.remove(p.rim); pools.splice(i, 1); }
+      p.life -= dt; p.tick -= dt;
+      const k = Math.max(0, Math.min(1, p.life, (p.max - p.life) * 3));
+      p.m.material.opacity = 0.8 * k; p.rim.material.opacity = 0.8 * k * (0.6 + Math.sin(t * 6) * 0.4);
+      if (Math.random() < dt * 14) emit(p.m.position.clone().add(V((Math.random() - 0.5) * p.r * 1.6, 0.1, (Math.random() - 0.5) * p.r * 1.6)), 1, p.kind === 'heal' ? mend : blood, { speed: 0.1, lift: 1, life: 0.8 });
+      if (p.tick <= 0) {
+        p.tick = 0.7;
+        if (p.kind === 'harm') { for (const f of alive()) if (f.g.position.distanceTo(p.m.position) < p.r) { hit(f, 0.35, blood, true); gain(2); } }
+        else for (const a of allies) if (a.g.position.distanceTo(p.m.position) < p.r + 0.5) heal(a, 0.06, mend);
+      }
+      if (p.life <= 0) { scene.remove(p.m); scene.remove(p.rim); p.m.material.dispose(); p.rim.material.dispose(); pools.splice(i, 1); }
     }
-    // blood mirror links
+    // Blood Bond links
     for (let i = links.length - 1; i >= 0; i--) {
       const l = links[i]; l.life -= dt;
       l.m.position.copy(l.a.g.position).setY(0.3); l.m.rotation.z += dt * 2;
@@ -758,14 +748,11 @@ const C = {
 };
 const fountainTop = V();
 
-function burstBats(pos, n) {
-  for (let i = 0; i < n; i++) {
-    const b = makeBat('#1a0c16', 1);
-    b.g.position.copy(pos); scene.add(b.g);
-    const v = V((Math.random() - 0.5) * 6, 1 + Math.random() * 3, (Math.random() - 0.5) * 6);
-    timed(0.9, (e, p) => { b.g.position.addScaledVector(v, 1 / 60); b.g.lookAt(b.g.position.clone().add(v)); b.wings.forEach((w, k) => { w.rotation.y = (k ? -1 : 1) * Math.sin(e.t * 30) * 0.8; }); b.g.scale.setScalar(1 - p * 0.6); }, () => scene.remove(b.g));
-  }
-  emit(pos, 20, '#5a0a2a', { speed: 1.5, life: 0.5 });
+function makePool(pos, r, life, kind) {
+  const m = new THREE.Mesh(new THREE.CircleGeometry(r, 32), new THREE.MeshBasicMaterial({ color: kind === 'heal' ? '#3a0814' : '#24040c', transparent: true, opacity: 0, depthWrite: false }));
+  m.rotation.x = -Math.PI / 2; m.position.copy(pos); scene.add(m);
+  const rim = new THREE.Mesh(new THREE.RingGeometry(r * 0.95, r, 48), addMat(kind === 'heal' ? mend : blood, 0)); rim.rotation.x = -Math.PI / 2; rim.position.copy(pos).setY(pos.y + 0.01); scene.add(rim);
+  return { m: m, rim: rim, life: life, max: life, tick: 0, r: r, kind: kind };
 }
 
 /* ================= LOOP ================= */
@@ -1000,11 +987,11 @@ frame();
 </script>
 
 
-<!-- ===== Game interface: text lives in ../data/sanlayn.js ===== -->
+<!-- ===== Game interface: text lives in ../data/bloodsworn.js ===== -->
 <link rel="stylesheet" href="../assets/ui.css">
 <script src="../assets/icons.js"></script>
 <script src="../assets/site.js"></script>
-<script src="../data/sanlayn.js"></script>
+<script src="../data/bloodsworn.js"></script>
 <script src="../data/roster.js"></script>
 <script src="../assets/ui.js"></script>
 </body>

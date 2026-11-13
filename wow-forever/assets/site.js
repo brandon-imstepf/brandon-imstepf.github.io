@@ -53,11 +53,11 @@ window.SITE = {
       "icon": "rail-warden"
     },
     {
-      "key": "sanlayn",
-      "name": "San'layn",
+      "key": "bloodsworn",
+      "name": "Bloodsworn",
       "sub": "Proposal",
-      "tip": "Cloth · Mana and Vitae",
-      "icon": "rail-sanlayn"
+      "tip": "Plate · Vitae",
+      "icon": "rail-bloodsworn"
     },
     {
       "separator": true

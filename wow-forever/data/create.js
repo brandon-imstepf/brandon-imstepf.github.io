@@ -10,6 +10,7 @@
   The model is scaled to the silhouette's height and stands on the ground. An animation named
   "Idle" plays if there is one, otherwise the first animation. Models load only from a web server
   (GitHub Pages, or a local server), not from a file opened directly.
+  Gear attaches to empties in the model named Attach_HandR, Attach_Head, ... (see data/gear.js).
 
   "look" shapes the placeholder silhouette:
     height, bulk, legs (leg length), head, neck, jaw, armLen, arms (thickness), hunch (0 to 1), belly
@@ -36,7 +37,7 @@ window.CREATE = {
     { "key": "bard",        "name": "Bard",        "color": "#e8c15a", "roles": "Melee DPS, Healer, Ranged DPS (all with Support)", "page": "bard" },
     { "key": "necromancer", "name": "Necromancer", "color": "#9fe07a", "roles": "Ranged DPS / Support, Tank", "page": "necromancer" },
     { "key": "warden",      "name": "Warden",      "color": "#e0b25c", "roles": "Tank, Melee DPS / Support", "page": "warden" },
-    { "key": "sanlayn",     "name": "San'layn",    "color": "#e0485a", "roles": "Ranged DPS, Healer, Melee DPS", "page": "sanlayn" }
+    { "key": "bloodsworn",  "name": "Bloodsworn",  "color": "#e0485a", "roles": "Healer, Tank, Melee DPS", "page": "bloodsworn" }
   ],
 
   "races": [

@@ -16,21 +16,21 @@ window.ROSTER = {
     "Gnome":          ["Warrior", "Rogue", "Mage", "Warlock", "Tinker", "Illusionist", "Bard"],
     "Draenei":        ["Warrior", "Paladin", "Hunter", "Priest", "Mage", "Shaman", "Illusionist", "Warden"],
     "Broken":         ["Warrior", "Rogue", "Warlock", "Illusionist", "Shaman","Necromancer"],
-    "Naga":           ["Warrior", "Hunter", "Mage", "Warlock", "Illusionist", "Warden", "San'layn"],
+    "Naga":           ["Warrior", "Hunter", "Mage", "Warlock", "Illusionist", "Warden", "Bloodsworn"],
     "Worgen":         ["Warrior", "Rogue", "Druid", "Priest", "Mage", "Hunter"],
-    "High Elf":       ["Priest", "Mage", "Illusionist", "Bard", "Warden", "San'layn"],
+    "High Elf":       ["Priest", "Mage", "Illusionist", "Bard", "Warden", "Bloodsworn"],
     "Dryad & Keeper": ["Hunter", "Druid", "Shaman", "Bard"]
   },
   "Horde": {
     "Orc":            ["Warrior", "Hunter", "Rogue", "Shaman", "Warlock", "Bard", "Necromancer"],
-    "Undead":         ["Warrior", "Paladin", "Rogue", "Priest", "Mage", "Warlock", "Tinker", "San'layn", "Illusionist", "Necromancer"],
+    "Undead":         ["Warrior", "Paladin", "Rogue", "Priest", "Mage", "Warlock", "Tinker", "Bloodsworn", "Illusionist", "Necromancer"],
     "Tauren":         ["Warrior", "Hunter", "Shaman", "Druid", "Bard"],
     "Darkspear":      ["Druid", "Hunter", "Rogue", "Shaman", "Mage", "Illusionist", "Bard"],
     "Revantusk":      ["Paladin", "Hunter", "Rogue", "Priest", "Warden", "Tinker"],
-    "Frostmane":      ["Warrior", "Hunter", "Shaman", "San'layn", "Necromancer", "Warlock"],
+    "Frostmane":      ["Warrior", "Hunter", "Shaman", "Bloodsworn", "Necromancer", "Warlock"],
     "Goblin":         ["Warrior", "Rogue", "Mage", "Warlock", "Tinker", "Bard"],
     "Ogre":           ["Warrior", "Hunter", "Shaman", "Mage", "Warlock", "Necromancer"],
-    "Blood Elf":      ["Paladin", "Priest", "Mage", "Illusionist", "Warden", "San'layn"],
+    "Blood Elf":      ["Paladin", "Priest", "Mage", "Illusionist", "Warden", "Bloodsworn"],
     "Briarborn":      ["Hunter", "Druid", "Shaman", "Warden"]
   }
 };

@@ -43,7 +43,7 @@
   /* Roster (data/roster.js): the one list of which races play which classes. "auto" values read from it. */
   var ROSTER = window.ROSTER || {};
   var CLASS_ORDER = ['Warrior', 'Paladin', 'Hunter', 'Rogue', 'Priest', 'Shaman', 'Mage', 'Warlock', 'Druid',
-                     'Tinker', 'Illusionist', 'Bard', 'Necromancer', 'Warden', "San'layn"];
+                     'Tinker', 'Illusionist', 'Bard', 'Necromancer', 'Warden', "Bloodsworn"];
   function classesOf(race) {
     for (var fac in ROSTER) if (ROSTER[fac][race]) return ROSTER[fac][race].length ? ROSTER[fac][race].join(', ') : 'TBD';
     return 'TBD';

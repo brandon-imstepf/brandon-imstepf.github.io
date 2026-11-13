@@ -333,21 +333,6 @@ window.PAGE = {
               "list": ["Alliance: Human, Dwarf", "Horde: Undead, Orc"]
             }
           ]
-        },
-        {
-          "title": "Unsettled Matters",
-          "tag": "Undecided",
-          "body": [
-            "Extract Essence has no effect yet. Deathless Calm is favored; Plaguewarding, Grave Memory and Echo of the Fallen are the alternatives.",
-            "The Plaguebringer lacks a finisher. Candidates are Carrion Swarm scaling per corpse, Plague Barrage, and Pestilent Feast.",
-            "Also open: whether Bone Shards spends its corpse on cast or on hit, whether the second cast of Master of Death fires on its own, and the wording of Marrow Harvest.",
-            {
-              "h": "Objectives"
-            },
-            {
-              "list": ["Decide Extract Essence", "Choose a Plaguebringer finisher"]
-            }
-          ]
         }
       ]
     }
